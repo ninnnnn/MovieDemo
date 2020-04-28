@@ -23,20 +23,20 @@ struct ScrollableTabViewOption {
     var marginPadding: CGFloat = 15
     var itemWidth: CGFloat = 50
     var itemSpace: CGFloat = 10
-    var tabIndicatorWidth: CGFloat = 25
+    var tabIndicatorWidth: CGFloat = 30
     var tabIndicatorHeight: CGFloat = 3
-    var tabIndicatorBottomSpace: CGFloat = 0
-    var tabIndicatorColor: UIColor = UIColor.hexStringToUIColor(hex: "c12356209")
+    var tabIndicatorBottomSpace: CGFloat = 10
+    var tabIndicatorColor: UIColor = UIColor.hexStringToUIColor(hex: "ce0350")
     var titleShouldTransformWhenSelected: Bool = true
     var titleTransformScale: CGFloat = 0.7
     var shouldChangeTitleColorWhenSelected: Bool = false
     var titleSelectedColor: UIColor = .black
     var titleUnSelectedColor: UIColor = .black
-    var selectTitleFont: UIFont = UIFont(name: "PingFangSC-Semibold", size: 24)!
-    var unSelectTitleFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 24)!
+    var selectTitleFont: UIFont = UIFont(name: "PingFangSC-Semibold", size: 18)!
+    var unSelectTitleFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 18)!
     var tabIndicatorType: TabIndicatorType = .bottomLine
     
-    var numberFont: UIFont = UIFont(name: "DINPro-Medium", size: 15)!
+    var numberFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 15)!
     
     ///After refresh data, it will select item when `updateDefaultSelectWhenRefeshData` is true, otherwise not.
     ///If `updateDefaultSelectWhenRefeshData` is false, you can select item by `updateDefualtSelect(_ data: ScrollableTabViewData)` function.

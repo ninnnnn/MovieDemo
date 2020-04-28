@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class HomeMovieCell: UITableViewCell {
 
@@ -14,8 +16,11 @@ class HomeMovieCell: UITableViewCell {
     @IBOutlet weak var movieImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var categoryLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var timeLengthLabel: UILabel!
+    @IBOutlet weak var pubdateLabel: UILabel!
+    @IBOutlet weak var durationsLabel: UILabel!
+    
+    var disposeBag = DisposeBag()
+    var movieData: [Subjects] = []
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,7 +31,10 @@ class HomeMovieCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
     }
     
     private func setCellShadow() {
@@ -40,4 +48,25 @@ class HomeMovieCell: UITableViewCell {
         movieImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
     }
     
+    func setupData(data: Subjects) {
+        movieImageView.loadImage(data.images?.small)
+        titleLabel.text = data.title
+        pubdateLabel.text = "上映日期：".appendingPathExtension(data.mainlandPubdate ?? "")
+        durationsLabel.text = "片長：" + data.durations[0]
+        
+        let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
+        var categories = ""
+        newItems.forEach { (category) in
+            categories.append(category)
+        }
+        categoryLabel.text = "類型：" + categories
+    }
+    
+//    func setupData(viewModel: HomeMovieCellViewModel) {
+//        movieImageView.loadImage(viewModel.movieImageUrl)
+//        titleLabel.text = viewModel.title
+//        categoryLabel.text = viewModel.category
+//        pubdateLabel.text = viewModel.pubdate
+//        durationsLabel.text = viewModel.durations
+//    }
 }

@@ -15,8 +15,10 @@ target 'MovieDemo' do
   target 'MovieDemoUITests' do
     # Pods for testing
   end
-
+    
+    pod 'Kingfisher'
     pod 'IQKeyboardManagerSwift'
+
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'Moya/RxSwift'

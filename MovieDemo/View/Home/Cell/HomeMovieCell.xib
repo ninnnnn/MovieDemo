@@ -27,29 +27,29 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="qfh-Gh-gXK">
-                                <rect key="frame" x="137" y="10" width="44" height="111"/>
+                                <rect key="frame" x="137" y="10" width="318" height="111"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Dh-zB-xrG">
-                                        <rect key="frame" x="0.0" y="0.0" width="44" height="22.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Dh-zB-xrG">
+                                        <rect key="frame" x="0.0" y="0.0" width="318" height="22.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hHl-0K-UmE">
-                                        <rect key="frame" x="0.0" y="29.5" width="44" height="22.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <rect key="frame" x="0.0" y="29.5" width="318" height="22.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="HomeTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R3E-bu-SDU">
-                                        <rect key="frame" x="0.0" y="59" width="44" height="22.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <rect key="frame" x="0.0" y="59" width="318" height="22.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="HomeTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uz3-wu-PaI">
-                                        <rect key="frame" x="0.0" y="88.5" width="44" height="22.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <rect key="frame" x="0.0" y="88.5" width="318" height="22.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="HomeTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -60,6 +60,7 @@
                         <constraints>
                             <constraint firstItem="Bye-k2-aGx" firstAttribute="top" secondItem="fcx-ud-FDn" secondAttribute="top" id="4FE-10-GQm"/>
                             <constraint firstAttribute="bottom" secondItem="Bye-k2-aGx" secondAttribute="bottom" id="OVl-B7-yt1"/>
+                            <constraint firstAttribute="trailing" secondItem="qfh-Gh-gXK" secondAttribute="trailing" constant="8" id="WXW-CS-RAG"/>
                             <constraint firstItem="qfh-Gh-gXK" firstAttribute="leading" secondItem="Bye-k2-aGx" secondAttribute="trailing" constant="8" id="hSh-fQ-R5B"/>
                             <constraint firstItem="qfh-Gh-gXK" firstAttribute="top" secondItem="fcx-ud-FDn" secondAttribute="top" constant="10" id="phV-bs-dKg"/>
                             <constraint firstAttribute="bottom" secondItem="qfh-Gh-gXK" secondAttribute="bottom" constant="8" id="vBn-eW-Hda"/>
@@ -79,9 +80,9 @@
             <connections>
                 <outlet property="categoryLabel" destination="hHl-0K-UmE" id="eZY-zP-ZRX"/>
                 <outlet property="cellBackgroundView" destination="fcx-ud-FDn" id="rVU-hf-3Ux"/>
-                <outlet property="dateLabel" destination="R3E-bu-SDU" id="hBv-7U-bsR"/>
+                <outlet property="durationsLabel" destination="uz3-wu-PaI" id="Smj-O7-WJB"/>
                 <outlet property="movieImageView" destination="Bye-k2-aGx" id="1Rw-P0-r9q"/>
-                <outlet property="timeLengthLabel" destination="uz3-wu-PaI" id="Smj-O7-WJB"/>
+                <outlet property="pubdateLabel" destination="R3E-bu-SDU" id="hBv-7U-bsR"/>
                 <outlet property="titleLabel" destination="2Dh-zB-xrG" id="1f9-Qj-f52"/>
             </connections>
             <point key="canvasLocation" x="247.10144927536234" y="184.48660714285714"/>

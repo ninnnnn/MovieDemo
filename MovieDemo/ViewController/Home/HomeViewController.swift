@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class HomeViewController: UIViewController {
     
@@ -17,9 +19,14 @@ class HomeViewController: UIViewController {
             tableView.delegate = self
         }
     }
+    
+    private let disposeBag = DisposeBag()
+    private var viewModel: HomeViewModel!
+    
     let width = UIScreen.main.bounds.width
     let searchController = UISearchController(searchResultsController: nil)
-    private lazy var searchTextField: UITextField? = { [unowned self] in
+    
+    lazy var searchTextField: UITextField? = { [unowned self] in
         var textField: UITextField?
         self.searchController.searchBar.subviews.forEach({ view in
             view.subviews.forEach({ view in
@@ -31,11 +38,23 @@ class HomeViewController: UIViewController {
         return textField
     }()
     
+    lazy var refreshControl: RxRefreshControl = {
+        return RxRefreshControl(viewModel)
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = HomeViewModel()
         
         registerCell()
         setNavigationBar()
+        binding()
+        tabView.updateDefualtSelect(DataManager.shared.tabData.value.first!)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.refreshData()
     }
 
     private func registerCell() {
@@ -43,7 +62,23 @@ class HomeViewController: UIViewController {
     }
     
     private func binding() {
+        DataManager.shared.tabData
+            .map({ $0 })
+            .bind(to: tabView.dataArray)
+            .disposed(by: self.disposeBag)
         
+        // input
+        tabView.didTapItem
+            .map({ $0?.id })
+            .bind(to: viewModel.input.tabId)
+            .disposed(by: disposeBag)
+        
+        // output
+        viewModel.output.inTheaterMovieList
+        .subscribe(onNext: { [weak self] _ in
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
     }
     
     private func setNavigationBar() {
@@ -64,11 +99,14 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return viewModel.output.inTheaterMovieList.value?.subjects.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: HomeMovieCell.identifier, for: indexPath) as? HomeMovieCell else { return UITableViewCell()}
+        guard let movieList = viewModel.output.inTheaterMovieList.value else { return cell }
+        let data = movieList.subjects[indexPath.row] 
+        cell.setupData(data: data)
         return cell
     }
 }
