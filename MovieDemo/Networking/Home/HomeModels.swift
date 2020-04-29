@@ -8,18 +8,8 @@
 
 import Foundation
 
-enum PageType: String, Codable {
-    case inTheaters = "1"
-    case comingSoon = "2"
-    case top250 = "3"
-    case weekly = "4"
-    case usBox = "5"
-    case newMovies = "6"
-}
-
-struct InTheaterMovieModel: Codable {
+struct MovieModel: Codable {
     let subjects: [Subjects]
-    let title: String
 }
 
 struct Subjects: Codable {
@@ -28,13 +18,15 @@ struct Subjects: Codable {
     let durations: [String]
     let mainlandPubdate: String?
     let images: Images?
+    let subject: Subject?
     
-    enum SubjectsCodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case genres
         case title
         case durations
         case mainlandPubdate = "mainland_pubdate"
         case images
+        case subject
     }
 }
 
@@ -42,4 +34,20 @@ struct Images: Codable {
     let small: String
     let large: String
     let medium: String
+}
+
+struct Subject: Codable {
+    let genres: [String]
+    let title: String
+    let durations: [String]
+    let mainlandPubdate: String?
+    let images: Images?
+    
+    enum CodingKeys: String, CodingKey {
+        case genres
+        case title
+        case durations
+        case mainlandPubdate = "mainland_pubdate"
+        case images
+    }
 }

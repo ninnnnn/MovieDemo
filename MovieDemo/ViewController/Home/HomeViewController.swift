@@ -49,7 +49,6 @@ class HomeViewController: UIViewController {
         registerCell()
         setNavigationBar()
         binding()
-        tabView.updateDefualtSelect(DataManager.shared.tabData.value.first!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,8 +68,8 @@ class HomeViewController: UIViewController {
         
         // input
         tabView.didTapItem
-            .map({ $0?.id })
-            .bind(to: viewModel.input.tabId)
+            .map({ $0?.title ?? HomeTabs.getInTheater.rawValue })
+            .bind(to: viewModel.input.tabName)
             .disposed(by: disposeBag)
         
         // output
@@ -99,13 +98,13 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.output.inTheaterMovieList.value?.subjects.count ?? 0
+        return viewModel.output.inTheaterMovieList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: HomeMovieCell.identifier, for: indexPath) as? HomeMovieCell else { return UITableViewCell()}
-        guard let movieList = viewModel.output.inTheaterMovieList.value else { return cell }
-        let data = movieList.subjects[indexPath.row] 
+//        guard let movieList = viewModel.output.inTheaterMovieList.value else { return cell }
+        let data = viewModel.output.inTheaterMovieList.value[indexPath.row]
         cell.setupData(data: data)
         return cell
     }

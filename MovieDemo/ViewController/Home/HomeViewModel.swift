@@ -13,48 +13,49 @@ import RxCocoa
 class HomeViewModel: ViewModelType, Refreshable {
     var endRefresh: PublishSubject<Void> = PublishSubject<Void>()
     func refreshData() {
-        getInTheaterMovies(tabId: 1)
+        getInTheaterMovies(tabName: HomeTabs.getInTheater)
     }
     
     struct Input {
-        let tabId: AnyObserver<Int?>
+        let tabName: AnyObserver<String>
     }
     
     struct Output {
-        let inTheaterMovieList: BehaviorRelay<InTheaterMovieModel?>
+        let inTheaterMovieList: BehaviorRelay<[Subjects]>
     }
     
     let input: Input
     let output: Output
     
-    private let moviesResultSub = BehaviorRelay<InTheaterMovieModel?>(value: nil)
+    private let moviesResultSub = BehaviorRelay<[Subjects]>(value: [])
     private let isHotMoviesLoading = BehaviorRelay<Bool>(value: false)
     
     private let disposeBag = DisposeBag()
     
     init() {
-        let tabId = PublishSubject<Int?>()
+        let tabName = PublishSubject<String>()
         
-        self.input = Input(tabId: tabId.asObserver())
+        self.input = Input(tabName: tabName.asObserver())
         self.output = Output(inTheaterMovieList: moviesResultSub)
         
-        tabId
-            .subscribe(onNext: { [weak self] (tabId) in
+        tabName
+            .subscribe(onNext: { [weak self] (tabName) in
                 guard let strongSelf = self else { return }
-                strongSelf.getInTheaterMovies(tabId: tabId ?? 1)
+                strongSelf.getInTheaterMovies(tabName: HomeTabs(rawValue: tabName)!)
             })
             .disposed(by: disposeBag)
     }
     
-    private func getInTheaterMovies(tabId: Int) {
+    private func getInTheaterMovies(tabName: HomeTabs) {
         self.isHotMoviesLoading.accept(true)
-        APIService.shared.request(HomeAPI.GetInTheater(pageType: .inTheaters)) // TODO: 改成tabId
+        APIService.shared.request(HomeAPI.GetMovies(homeTabs: tabName))
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
                 self?.isHotMoviesLoading.accept(false)
-                self?.moviesResultSub.accept(model)
+                self?.moviesResultSub.accept(model.subjects)
                 }, onError: { [weak self] _ in
                     self?.isHotMoviesLoading.accept(false)
+                    self?.moviesResultSub.accept([])
             })
             .disposed(by: self.disposeBag)
     }

@@ -24,34 +24,32 @@ enum HomeTabs: String {
 
 enum HomeAPI {
 
-    struct GetInTheater: HomeAPITargetType {
+    struct GetMovies: HomeAPITargetType {
 
-        typealias ResponseDataType = InTheaterMovieModel
+        typealias ResponseDataType = MovieModel
 
-        var path: String { return "/in_theaters" }
-//        var path: String {
-//            switch HomeTabs(rawValue: self.path) {
-//            case .getInTheater:
-//                return "/in_theaters"
-//            case .getCommingSoon:
-//                return "/coming_soon"
-//            case .getTop250:
-//                return "/top250"
-//            case .getWeekly:
-//                return "/weekly"
-//            case .getUSBox:
-//                return "/us_box"
-//            case .getNewMovies:
-//                return "/new_movies"
-//            case .none:
-//                return ""
-//            }
-//        }
+        var homeTabs: HomeTabs
+        var path: String {
+            switch homeTabs {
+            case .getInTheater:
+                return "/in_theaters"
+            case .getCommingSoon:
+                return "/coming_soon"
+            case .getTop250:
+                return "/top250"
+            case .getWeekly:
+                return "/weekly"
+            case .getUSBox:
+                return "/us_box"
+            case .getNewMovies:
+                return "/new_movies"
+            }
+        }
         var task: Task { return .requestParameters(parameters: parameters, encoding: URLEncoding.default)}
 
         private let parameters: [String: String] = ["apikey": "0b2bdeda43b5688921839c8ecb20399b"]
-        init(pageType: PageType) {
-           // self.parameters = ["pageType": pageType.rawValue]
+        init(homeTabs: HomeTabs) {
+            self.homeTabs = homeTabs
         }
     }
 }

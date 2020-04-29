@@ -51,13 +51,20 @@ class HomeMovieCell: UITableViewCell {
     func setupData(data: Subjects) {
         movieImageView.loadImage(data.images?.small)
         titleLabel.text = data.title
-        pubdateLabel.text = "上映日期：".appendingPathExtension(data.mainlandPubdate ?? "")
-        durationsLabel.text = "片長：" + data.durations[0]
+        pubdateLabel.text = "上映日期：" + (data.mainlandPubdate ?? "")
         
-        let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
+        if data.durations.isEmpty {
+            durationsLabel.text = "片長："
+        } else {
+            durationsLabel.text = "片長：" + data.durations[0]
+        }
+        
         var categories = ""
-        newItems.forEach { (category) in
-            categories.append(category)
+        if !data.genres.isEmpty {
+            let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
+            newItems.forEach { (category) in
+                categories.append(category)
+            }
         }
         categoryLabel.text = "類型：" + categories
     }
