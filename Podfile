@@ -22,4 +22,6 @@ target 'MovieDemo' do
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'Moya/RxSwift'
+
+    pod 'Cosmos'
 end

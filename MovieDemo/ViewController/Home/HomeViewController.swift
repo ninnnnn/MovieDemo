@@ -23,7 +23,6 @@ class HomeViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var viewModel: HomeViewModel!
     
-    let width = UIScreen.main.bounds.width
     let searchController = UISearchController(searchResultsController: nil)
     
     lazy var searchTextField: UITextField? = { [unowned self] in
@@ -73,7 +72,7 @@ class HomeViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // output
-        viewModel.output.inTheaterMovieList
+        viewModel.output.movieList
         .subscribe(onNext: { [weak self] _ in
             self?.tableView.reloadData()
         })
@@ -89,22 +88,16 @@ class HomeViewController: UIViewController {
         navigationItem.searchController = searchController
         
     }
-    
-    private func showDetailVC() {
-        guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
-        self.navigationController?.pushViewController(detailVC, animated: true)
-    }
 }
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.output.inTheaterMovieList.value.count
+        return viewModel.output.movieList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: HomeMovieCell.identifier, for: indexPath) as? HomeMovieCell else { return UITableViewCell()}
-//        guard let movieList = viewModel.output.inTheaterMovieList.value else { return cell }
-        let data = viewModel.output.inTheaterMovieList.value[indexPath.row]
+        let data = viewModel.output.movieList.value[indexPath.row]
         cell.setupData(data: data)
         return cell
     }
@@ -116,7 +109,9 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        showDetailVC()
+        guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
+        detailVC.movieDeatil = self.viewModel.output.movieList.value[indexPath.row]
+        detailVC.movieId = self.viewModel.output.movieList.value[indexPath.row].id
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
