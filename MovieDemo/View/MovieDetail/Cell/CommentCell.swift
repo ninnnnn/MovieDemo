@@ -10,7 +10,7 @@ import UIKit
 
 class CommentCell: UITableViewCell {
 
-    @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var categoryStackView: UIStackView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var postTimeLabel: UILabel!
@@ -28,14 +28,11 @@ class CommentCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-//    func setup(data: PopularComments) {
-//        userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
-//        userNameLabel.text = data.author.name
-//        postTimeLabel.text = data.createdAt
-//        usefulCountLabel.text = String(data.usefulCount)
-//    }
-    
-    func setup(data: String) { //test
-        contentLabel.text = data
+    func setup(data: PopularComments) {
+        userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
+        userNameLabel.text = data.author.name
+        postTimeLabel.text = data.createdAt
+        usefulCountLabel.text = String(data.usefulCount) + " 有用"
+        contentLabel.text = data.content
     }
 }

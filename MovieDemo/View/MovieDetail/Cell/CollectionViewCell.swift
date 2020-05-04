@@ -18,4 +18,8 @@ class CollectionViewCell: UICollectionViewCell {
         // Initialization code
     }
 
+    func setup(text: String, imageUrl: String) {
+        castImageView.loadImage(imageUrl, placeHolder: UIImage(named: "placeholder"))
+        descLabel.text = text
+    }
 }

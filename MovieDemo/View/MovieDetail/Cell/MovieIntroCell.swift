@@ -10,7 +10,7 @@ import UIKit
 
 class MovieIntroCell: UITableViewCell {
 
-    @IBOutlet weak var contentLabel: ExpandableLabel!
+    @IBOutlet weak var contentLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

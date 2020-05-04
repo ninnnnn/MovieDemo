@@ -10,21 +10,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="113" id="KGk-i7-Jjw" customClass="StarRateCell" customModule="MovieDemo" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="351" height="113"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="149" id="KGk-i7-Jjw" customClass="StarRateCell" customModule="MovieDemo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="351" height="149"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="351" height="113"/>
+                <rect key="frame" x="0.0" y="0.0" width="351" height="149"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="geY-d1-vSA">
-                        <rect key="frame" x="8" y="22" width="37.5" height="17"/>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SHg-7y-GLq" customClass="CosmosView" customModule="Cosmos">
-                        <rect key="frame" x="8" y="63" width="335" height="50"/>
+                        <rect key="frame" x="8" y="99" width="335" height="50"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="starSize">
@@ -42,14 +36,33 @@
                             <userDefinedRuntimeAttribute type="boolean" keyPath="updateOnTouch" value="NO"/>
                         </userDefinedRuntimeAttributes>
                     </view>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xhT-PK-3fT">
+                        <rect key="frame" x="8" y="8" width="47.5" height="67"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hCW-1u-wZh">
+                                <rect key="frame" x="0.0" y="25.5" width="2" height="16"/>
+                                <color key="backgroundColor" name="SubColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="16" id="Le9-Qy-S33"/>
+                                    <constraint firstAttribute="width" constant="2" id="lLl-dq-Bnt"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="geY-d1-vSA">
+                                <rect key="frame" x="10" y="25" width="37.5" height="17"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="SHg-7y-GLq" firstAttribute="top" secondItem="geY-d1-vSA" secondAttribute="bottom" constant="24" id="0fn-el-Q3D"/>
+                    <constraint firstItem="xhT-PK-3fT" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="FMk-LZ-ze6"/>
                     <constraint firstItem="SHg-7y-GLq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="GmG-n5-0Lf"/>
                     <constraint firstAttribute="trailing" secondItem="SHg-7y-GLq" secondAttribute="trailing" constant="8" id="MsM-3B-42P"/>
-                    <constraint firstItem="geY-d1-vSA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="cuB-hC-EKi"/>
-                    <constraint firstItem="geY-d1-vSA" firstAttribute="top" relation="lessThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="24" id="f4b-kr-P97"/>
+                    <constraint firstItem="xhT-PK-3fT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="tsz-DY-7mv"/>
                     <constraint firstAttribute="bottom" secondItem="SHg-7y-GLq" secondAttribute="bottom" id="uc3-1k-6k4"/>
+                    <constraint firstItem="SHg-7y-GLq" firstAttribute="top" secondItem="xhT-PK-3fT" secondAttribute="bottom" constant="24" id="ztk-16-JMI"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
@@ -57,7 +70,7 @@
                 <outlet property="cosmosView" destination="SHg-7y-GLq" id="Cxd-tm-hG8"/>
                 <outlet property="ratingLabel" destination="geY-d1-vSA" id="DwZ-Gh-HBd"/>
             </connections>
-            <point key="canvasLocation" x="160.1449275362319" y="175.78125"/>
+            <point key="canvasLocation" x="160.1449275362319" y="187.83482142857142"/>
         </tableViewCell>
     </objects>
     <resources>

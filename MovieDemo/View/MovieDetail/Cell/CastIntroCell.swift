@@ -10,10 +10,17 @@ import UIKit
 
 class CastIntroCell: UITableViewCell {
 
+    @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
             collectionView.dataSource = self
             collectionView.delegate = self
+        }
+    }
+    
+    var castList: [CellContent] = [] {
+        didSet {
+            self.collectionView.reloadData()
         }
     }
     
@@ -29,27 +36,39 @@ class CastIntroCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func setup(data: [CellContent]) {
+        castList = data
+    }
 }
 
 extension CastIntroCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return castList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else {
             return UICollectionViewCell() }
-        cell.castImageView.image = UIImage(named: "placeholder")
+        let cellIndexPath = castList[indexPath.item]
+        switch cellIndexPath.type {
+        case .cast:
+            categoryLabel.text = "演職員"
+            cell.setup(text: cellIndexPath.text, imageUrl: cellIndexPath.imageUrl)
+        default:
+            categoryLabel.text = "花絮"
+            cell.setup(text: cellIndexPath.text, imageUrl: cellIndexPath.imageUrl)
+        }
         return cell
     }
 }
 
 extension CastIntroCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: width / 3, height: width * 4 / 3)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 24, right: 8)
+        return CGSize(width: width / 3, height: 200)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 4
+        return 16
     }
 }

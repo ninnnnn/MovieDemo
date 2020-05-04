@@ -18,6 +18,7 @@ struct MovieObject: Codable {
     let rating: Rating
     let popularComments: [PopularComments]
     let casts: [Cast]
+    let trailers: [Trailer]
     
     enum CodingKeys: String, CodingKey {
         case title
@@ -29,6 +30,7 @@ struct MovieObject: Codable {
         case rating
         case popularComments = "popular_comments"
         case casts
+        case trailers
     }
 }
 
@@ -63,4 +65,22 @@ struct Author: Codable {
 struct Cast: Codable {
     let avatars: Images
     let name: String
+}
+
+struct Trailer: Codable {
+    let title: String
+    let medium: String
+}
+
+// Custom model type for collectionView cell
+
+enum ModelType {
+    case cast
+    case trailer
+}
+
+struct CellContent {
+    let type: ModelType
+    let text: String
+    let imageUrl: String
 }

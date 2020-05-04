@@ -22,6 +22,7 @@ class MovieDetailViewController: UIViewController {
     var movieDeatil: Subjects?
     var movieId: String!
     var states: [Bool] = [true, true, true, true]
+    var collectionViewDataList: [CellContent] = []
     
     private let heightOfHeader = height / 3
     private let disposeBag = DisposeBag()
@@ -83,7 +84,8 @@ class MovieDetailViewController: UIViewController {
     private func initHeaderView() {
         headImageView.loadImage(movieDeatil?.images?.small, placeHolder: UIImage(named: "placeholder"))
         headImageView.frame = CGRect.init(x: 0, y: -heightOfHeader, width: width, height: heightOfHeader)
-        headImageView.contentMode = .scaleAspectFill
+        headImageView.contentMode = .scaleAspectFit
+        headImageView.backgroundColor = UIColor(named: "MainColor")
         headImageView.clipsToBounds = true
         tableView.addSubview(headImageView)
         tableView.contentInset = UIEdgeInsets(top: heightOfHeader + 150, left: 0, bottom: 0, right: 0)
@@ -187,7 +189,7 @@ class MovieDetailViewController: UIViewController {
 
 extension MovieDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3 + 4
+        return 4 + 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -200,30 +202,37 @@ extension MovieDetailViewController: UITableViewDataSource {
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell else { return UITableViewCell() }
             let data = viewModel.output.movieDetail.value?.summary
-            cell.contentLabel.delegate = self
-            
-            cell.contentLabel.setLessLinkWith(lessLink: "收起", attributes: [.foregroundColor: UIColor.red], position: NSTextAlignment.right)
-            
-            cell.layoutIfNeeded()
-            
-            cell.contentLabel.shouldCollapse = true
             cell.contentLabel.numberOfLines = 5
-            cell.contentLabel.collapsed = states[indexPath.row]
             cell.setup(data: data ?? "")
             return cell
         case 2:
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
-//            return cell
-            return UITableViewCell()
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
+            guard let data = viewModel.output.movieDetail.value?.casts else { return cell }
+            collectionViewDataList.removeAll()
+            for cast in data {
+                collectionViewDataList.append(CellContent(type: .cast, text: cast.name, imageUrl: cast.avatars.small))
+            }
+            cell.setup(data: collectionViewDataList)
+            return cell
+        case 3:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
+            guard let data = viewModel.output.movieDetail.value?.trailers else { return cell }
+            collectionViewDataList.removeAll()
+            for trailer in data {
+                collectionViewDataList.append(CellContent(type: .trailer, text: trailer.title, imageUrl: trailer.medium))
+            }
+            cell.setup(data: collectionViewDataList)
+            return cell
         default:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else { return UITableViewCell() }
-//            let data = viewModel.output.movieDetail.value?.popularComments[indexPath.row]
-            if indexPath.row == 3 {
-                cell.categoryLabel.isHidden = false
+            let data = viewModel.output.movieDetail.value?.popularComments[indexPath.row - 4]
+            let defaultData = PopularComments(usefulCount: 0, author: Author(avatar: "", name: ""), content: "", createdAt: "")
+            cell.setup(data: data ?? defaultData)
+            if indexPath.row == 4 {
+                cell.categoryStackView.isHidden = false
             } else {
-                cell.categoryLabel.isHidden = true
+                cell.categoryStackView.isHidden = true
             }
-            cell.setup(data: "很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字")
             return cell
         }
     }
@@ -235,9 +244,11 @@ extension MovieDetailViewController: UITableViewDelegate {
         case 0:
             return height / 7
         case 1:
-            return height / 5
-        case 2:
             return height / 4
+        case 2:
+            return height / 3
+        case 3:
+            return height / 3
         default:
             return height / 5
         }
@@ -296,37 +307,5 @@ extension MovieDetailViewController: UITableViewDelegate {
             locationLabel.alpha = 0
             titleLabel.numberOfLines = 1
         }
-    }
-}
-
-extension MovieDetailViewController: ExpandableLabelDelegate {
-    func willExpandLabel(_ label: ExpandableLabel) {
-        tableView.beginUpdates()
-    }
-    
-    func didExpandLabel(_ label: ExpandableLabel) {
-        let point = label.convert(CGPoint.zero, to: tableView)
-        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
-            states[indexPath.row] = false
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-            }
-        }
-        tableView.endUpdates()
-    }
-    
-    func willCollapseLabel(_ label: ExpandableLabel) {
-        tableView.beginUpdates()
-    }
-    
-    func didCollapseLabel(_ label: ExpandableLabel) {
-        let point = label.convert(CGPoint.zero, to: tableView)
-        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
-            states[indexPath.row] = true
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-            }
-        }
-        tableView.endUpdates()
     }
 }
