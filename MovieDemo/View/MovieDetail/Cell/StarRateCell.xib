@@ -18,13 +18,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="geY-d1-vSA">
-                        <rect key="frame" x="8" y="0.0" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <rect key="frame" x="8" y="22" width="37.5" height="17"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SHg-7y-GLq" customClass="CosmosView" customModule="Cosmos">
-                        <rect key="frame" x="8" y="45" width="335" height="68"/>
+                        <rect key="frame" x="8" y="63" width="335" height="50"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="starSize">
@@ -39,6 +39,7 @@
                             <userDefinedRuntimeAttribute type="color" keyPath="filledBorderColor">
                                 <color key="value" name="SubColor"/>
                             </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="updateOnTouch" value="NO"/>
                         </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
@@ -47,7 +48,7 @@
                     <constraint firstItem="SHg-7y-GLq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="GmG-n5-0Lf"/>
                     <constraint firstAttribute="trailing" secondItem="SHg-7y-GLq" secondAttribute="trailing" constant="8" id="MsM-3B-42P"/>
                     <constraint firstItem="geY-d1-vSA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="cuB-hC-EKi"/>
-                    <constraint firstItem="geY-d1-vSA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="f4b-kr-P97"/>
+                    <constraint firstItem="geY-d1-vSA" firstAttribute="top" relation="lessThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="24" id="f4b-kr-P97"/>
                     <constraint firstAttribute="bottom" secondItem="SHg-7y-GLq" secondAttribute="bottom" id="uc3-1k-6k4"/>
                 </constraints>
             </tableViewCellContentView>

@@ -10,10 +10,12 @@ import UIKit
 
 class CommentCell: UITableViewCell {
 
+    @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var postTimeLabel: UILabel!
     @IBOutlet weak var usefulCountLabel: UILabel!
+    @IBOutlet weak var contentLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,10 +28,14 @@ class CommentCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setup(data: PopularComments) {
-        userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
-        userNameLabel.text = data.author.name
-        postTimeLabel.text = data.createdAt
-        usefulCountLabel.text = String(data.usefulCount)
+//    func setup(data: PopularComments) {
+//        userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
+//        userNameLabel.text = data.author.name
+//        postTimeLabel.text = data.createdAt
+//        usefulCountLabel.text = String(data.usefulCount)
+//    }
+    
+    func setup(data: String) { //test
+        contentLabel.text = data
     }
 }

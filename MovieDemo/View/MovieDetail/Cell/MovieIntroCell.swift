@@ -10,11 +10,12 @@ import UIKit
 
 class MovieIntroCell: UITableViewCell {
 
-    @IBOutlet weak var contentLabel: UILabel!
+    @IBOutlet weak var contentLabel: ExpandableLabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        contentLabel.numberOfLines = 5
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -26,5 +27,4 @@ class MovieIntroCell: UITableViewCell {
     func setup(data: String) {
         contentLabel.text = data
     }
-    
 }

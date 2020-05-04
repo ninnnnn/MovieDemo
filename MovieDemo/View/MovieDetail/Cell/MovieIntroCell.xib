@@ -17,13 +17,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="劇情簡介" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MFd-vi-hVg">
-                        <rect key="frame" x="8" y="0.0" width="57.5" height="17"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <rect key="frame" x="8" y="24" width="57.5" height="17"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AhP-5i-w6B">
-                        <rect key="frame" x="8" y="41" width="405" height="14.5"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AhP-5i-w6B" customClass="ExpandableLabel" customModule="MovieDemo" customModuleProvider="target">
+                        <rect key="frame" x="8" y="65" width="405" height="14.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -34,7 +34,7 @@
                     <constraint firstItem="MFd-vi-hVg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="Rhp-Ti-UjD"/>
                     <constraint firstItem="AhP-5i-w6B" firstAttribute="top" secondItem="MFd-vi-hVg" secondAttribute="bottom" constant="24" id="WhY-r7-JCb"/>
                     <constraint firstItem="AhP-5i-w6B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="r0u-7s-TNx"/>
-                    <constraint firstItem="MFd-vi-hVg" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="zZM-eH-Yd8"/>
+                    <constraint firstItem="MFd-vi-hVg" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="24" id="zZM-eH-Yd8"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

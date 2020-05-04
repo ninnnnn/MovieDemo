@@ -21,7 +21,9 @@ class MovieDetailViewController: UIViewController {
     
     var movieDeatil: Subjects?
     var movieId: String!
+    var states: [Bool] = [true, true, true, true]
     
+    private let heightOfHeader = height / 3
     private let disposeBag = DisposeBag()
     private let backBtn = UIButton()
     private var viewModel: MovieDetailViewModel!
@@ -80,16 +82,16 @@ class MovieDetailViewController: UIViewController {
     
     private func initHeaderView() {
         headImageView.loadImage(movieDeatil?.images?.small, placeHolder: UIImage(named: "placeholder"))
-        headImageView.frame = CGRect.init(x: 0, y: -200, width: width, height: 200)
+        headImageView.frame = CGRect.init(x: 0, y: -heightOfHeader, width: width, height: heightOfHeader)
         headImageView.contentMode = .scaleAspectFill
         headImageView.clipsToBounds = true
         tableView.addSubview(headImageView)
-        tableView.contentInset = UIEdgeInsets(top: 200, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: heightOfHeader + 150, left: 0, bottom: 0, right: 0)
     }
     
     private func initTopView() {
         DispatchQueue.main.async {
-            self.topView.frame = CGRect.init(x: 0, y: 200 + self.view.safeAreaInsets.top, width: width, height: 150)
+            self.topView.frame = CGRect.init(x: 0, y: self.heightOfHeader + self.view.safeAreaInsets.top, width: width, height: 150)
         }
         topView.backgroundColor = UIColor(named: "MainColor")
         // 電影名稱
@@ -198,15 +200,30 @@ extension MovieDetailViewController: UITableViewDataSource {
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell else { return UITableViewCell() }
             let data = viewModel.output.movieDetail.value?.summary
+            cell.contentLabel.delegate = self
+            
+            cell.contentLabel.setLessLinkWith(lessLink: "收起", attributes: [.foregroundColor: UIColor.red], position: NSTextAlignment.right)
+            
+            cell.layoutIfNeeded()
+            
+            cell.contentLabel.shouldCollapse = true
+            cell.contentLabel.numberOfLines = 5
+            cell.contentLabel.collapsed = states[indexPath.row]
             cell.setup(data: data ?? "")
             return cell
         case 2:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
-            return cell
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
+//            return cell
+            return UITableViewCell()
         default:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else { return UITableViewCell() }
 //            let data = viewModel.output.movieDetail.value?.popularComments[indexPath.row]
-//            cell.setup(data: data!)
+            if indexPath.row == 3 {
+                cell.categoryLabel.isHidden = false
+            } else {
+                cell.categoryLabel.isHidden = true
+            }
+            cell.setup(data: "很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字")
             return cell
         }
     }
@@ -229,17 +246,18 @@ extension MovieDetailViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if !isViewLoaded || view.window == nil { return }
         print(scrollView.contentOffset.y)
+        let topPadding = self.view.safeAreaInsets.top
         let offsetY = scrollView.contentOffset.y
-        let radius = -offsetY / 200 //200 = headView高度
+        let radius = -offsetY / heightOfHeader
         
         var topViewFrame = topView.frame
         if scrollView.contentOffset.y < 0 {
-             topViewFrame.origin.y = -scrollView.contentOffset.y
+            topViewFrame.origin.y = -(scrollView.contentOffset.y + 150 - topPadding)
         } else {
-            if scrollView.contentOffset.y < 150 - 80 {
-                topViewFrame.origin.y = -scrollView.contentOffset.y
+            if scrollView.contentOffset.y < 150 - (topViewFrame.height * 3 / 4) {
+                topViewFrame.origin.y = -(scrollView.contentOffset.y)
             } else {
-                topViewFrame.origin.y = -(150 - 80)
+                topViewFrame.origin.y = -(150 - (topViewFrame.height * 3 / 4))
             }
         }
 
@@ -247,36 +265,68 @@ extension MovieDetailViewController: UITableViewDelegate {
         self.topView.frame = topViewFrame
         
         
-        if (-offsetY > 200){
+        if (-offsetY > heightOfHeader){
             headImageView.transform = CGAffineTransform.init(scaleX: radius, y: radius)
             var frame = headImageView.frame
             frame.origin.y = offsetY
             headImageView.frame = frame
         }
-//
+
         if radius > 0 {
-//            titleLabel.frame = CGRect.init(x: 0, y: (120 * (1-radius)), width: width, height: 25)
-//            directorLabel.frame = CGRect.init(x: 0, y: titleLabel.frame.maxY, width: width, height: 25)
-//            castLabel.frame = CGRect.init(x: 0, y: directorLabel.frame.maxY, width: width, height: 25)
-//            generesLabel.frame = CGRect.init(x: 0, y: castLabel.frame.maxY, width: width, height: 25)
-//            pubdateLabel.frame = CGRect.init(x: 0, y: generesLabel.frame.maxY, width: width, height: 25)
-//            locationLabel.frame = CGRect.init(x: 0, y: pubdateLabel.frame.maxY, width: width, height: 25)
-//
-//            directorLabel.alpha = radius
-//            castLabel.alpha = radius
-//            generesLabel.alpha = radius
-//            pubdateLabel.alpha = radius
-//            locationLabel.alpha = radius
-//            titleLabel.numberOfLines = 2
-//
+            titleLabel.frame = CGRect.init(x: 0, y: (105 * (1-radius)) + topPadding, width: width, height: 25)
+            directorLabel.frame = CGRect.init(x: 0, y: titleLabel.frame.maxY, width: width, height: 25)
+            castLabel.frame = CGRect.init(x: 0, y: directorLabel.frame.maxY, width: width, height: 25)
+            generesLabel.frame = CGRect.init(x: 0, y: castLabel.frame.maxY, width: width, height: 25)
+            pubdateLabel.frame = CGRect.init(x: 0, y: generesLabel.frame.maxY, width: width, height: 25)
+            locationLabel.frame = CGRect.init(x: 0, y: pubdateLabel.frame.maxY, width: width, height: 25)
+
+            directorLabel.alpha = radius
+            castLabel.alpha = radius
+            generesLabel.alpha = radius
+            pubdateLabel.alpha = radius
+            locationLabel.alpha = radius
+            titleLabel.numberOfLines = 2
+
 //            topView.frame = CGRect.init(x: 0, y: 200 - 150 - offsetY, width: width, height: 150)
         } else {
-//            directorLabel.alpha = 0
-//            castLabel.alpha = 0
-//            generesLabel.alpha = 0
-//            pubdateLabel.alpha = 0
-//            locationLabel.alpha = 0
-//            titleLabel.numberOfLines = 1
+            directorLabel.alpha = 0
+            castLabel.alpha = 0
+            generesLabel.alpha = 0
+            pubdateLabel.alpha = 0
+            locationLabel.alpha = 0
+            titleLabel.numberOfLines = 1
         }
+    }
+}
+
+extension MovieDetailViewController: ExpandableLabelDelegate {
+    func willExpandLabel(_ label: ExpandableLabel) {
+        tableView.beginUpdates()
+    }
+    
+    func didExpandLabel(_ label: ExpandableLabel) {
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            states[indexPath.row] = false
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        tableView.endUpdates()
+    }
+    
+    func willCollapseLabel(_ label: ExpandableLabel) {
+        tableView.beginUpdates()
+    }
+    
+    func didCollapseLabel(_ label: ExpandableLabel) {
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            states[indexPath.row] = true
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        tableView.endUpdates()
     }
 }
