@@ -110,7 +110,6 @@ extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
-        detailVC.movieDeatil = self.viewModel.output.movieList.value[indexPath.row]
         detailVC.movieId = self.viewModel.output.movieList.value[indexPath.row].id
         self.navigationController?.pushViewController(detailVC, animated: true)
     }

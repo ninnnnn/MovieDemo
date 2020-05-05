@@ -12,6 +12,14 @@ import RxCocoa
 
 class MovieDetailViewController: UIViewController {
 
+    @IBOutlet weak var movieNameLabel: UILabel!
+    @IBOutlet weak var topView: UIView!
+    @IBOutlet weak var directorLabel: UILabel!
+    @IBOutlet weak var castLabel: UILabel!
+    @IBOutlet weak var genresLabel: UILabel!
+    @IBOutlet weak var pubdateLabel: UILabel!
+    @IBOutlet weak var countriesLabel: UILabel!
+    @IBOutlet weak var topViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
@@ -19,31 +27,30 @@ class MovieDetailViewController: UIViewController {
         }
     }
     
-    var movieDeatil: Subjects?
     var movieId: String!
     var states: [Bool] = [true, true, true, true]
     var collectionViewDataList: [CellContent] = []
     
-    private let heightOfHeader = height / 3
+    private let heightOfHeader = height / 2
+    private let heightOfTopView: CGFloat = 150
     private let disposeBag = DisposeBag()
     private let backBtn = UIButton()
     private var viewModel: MovieDetailViewModel!
+    private var headerView = UIView()
     private var headImageView = UIImageView()
-    private var topView = UIView()
-    private var titleLabel = UILabel()
-    private var directorLabel = UILabel()
-    private var castLabel = UILabel()
-    private var generesLabel = UILabel()
-    private var pubdateLabel = UILabel()
-    private var locationLabel = UILabel()
+    private var topPadding: CGFloat {
+        return self.view.safeAreaInsets.top
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = MovieDetailViewModel(eventId: movieId)
 
         registerCell()
-        initHeaderView()
-        initTopView()
         setBackBtn()
         binding()
     }
@@ -58,17 +65,13 @@ class MovieDetailViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        print(view.safeAreaInsets.top)
-    }
-    
     private func binding() {
-        
         // output
         viewModel.output.movieDetail
         .subscribe(onNext: { [weak self] _ in
             self?.tableView.reloadData()
+            self?.initHeaderData()
+            self?.initHeaderView()
         })
         .disposed(by: disposeBag)
     }
@@ -82,70 +85,25 @@ class MovieDetailViewController: UIViewController {
     }
     
     private func initHeaderView() {
-        headImageView.loadImage(movieDeatil?.images?.small, placeHolder: UIImage(named: "placeholder"))
-        headImageView.frame = CGRect.init(x: 0, y: -heightOfHeader, width: width, height: heightOfHeader)
+        headerView.frame = CGRect.init(x: 0, y: -(heightOfHeader + topPadding + heightOfTopView), width: width, height: heightOfHeader + topPadding)
+        headerView.backgroundColor = UIColor(named: "MainColor")
+        headImageView.frame = CGRect.init(x: 0, y: topPadding, width: width, height: heightOfHeader)
+        headerView.addSubview(headImageView)
         headImageView.contentMode = .scaleAspectFit
-        headImageView.backgroundColor = UIColor(named: "MainColor")
         headImageView.clipsToBounds = true
-        tableView.addSubview(headImageView)
-        tableView.contentInset = UIEdgeInsets(top: heightOfHeader + 150, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: heightOfHeader + topPadding + heightOfTopView, left: 0, bottom: 0, right: 0)
+        tableView.addSubview(headerView)
     }
     
-    private func initTopView() {
-        DispatchQueue.main.async {
-            self.topView.frame = CGRect.init(x: 0, y: self.heightOfHeader + self.view.safeAreaInsets.top, width: width, height: 150)
-        }
-        topView.backgroundColor = UIColor(named: "MainColor")
-        // 電影名稱
-        titleLabel.frame = CGRect.init(x: 0, y: 0, width: width, height: 25)
-        titleLabel.font = UIFont(name: "PingFangSC-Regular", size: 18)!
-        titleLabel.numberOfLines = 2
-        titleLabel.text = movieDeatil?.title ?? "電影名稱"
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-        topView.addSubview(titleLabel)
-        // 導演
-        directorLabel.frame = CGRect.init(x: 0, y: titleLabel.frame.maxY, width: width, height: 25)
-        directorLabel.font = UIFont(name: "PingFangSC-Regular", size: 12)!
-        directorLabel.numberOfLines = 1
-        directorLabel.text = "導演：" + (movieDeatil?.directors[0].name ?? "導演")
-        directorLabel.textColor = .white
-        directorLabel.textAlignment = .center
-        topView.addSubview(directorLabel)
-        // 演員
-        castLabel.frame = CGRect.init(x: 0, y: directorLabel.frame.maxY, width: width, height: 25)
-        castLabel.font = UIFont(name: "PingFangSC-Regular", size: 12)!
-        castLabel.numberOfLines = 2
-        castLabel.text = getCastText()
-        castLabel.textColor = .white
-        castLabel.textAlignment = .center
-        topView.addSubview(castLabel)
-        // 類型
-        generesLabel.frame = CGRect.init(x: 0, y: castLabel.frame.maxY, width: width, height: 25)
-        generesLabel.font = UIFont(name: "PingFangSC-Regular", size: 12)!
-        generesLabel.numberOfLines = 1
-        generesLabel.text = getGeneresText()
-        generesLabel.textColor = .white
-        generesLabel.textAlignment = .center
-        topView.addSubview(generesLabel)
-        // 上映日期
-        pubdateLabel.frame = CGRect.init(x: 0, y: generesLabel.frame.maxY, width: width, height: 25)
-        pubdateLabel.font = UIFont(name: "PingFangSC-Regular", size: 12)!
-        pubdateLabel.numberOfLines = 1
-        pubdateLabel.text = "上映日期：" + (movieDeatil?.mainlandPubdate ?? "")
-        pubdateLabel.textColor = .white
-        pubdateLabel.textAlignment = .center
-        topView.addSubview(pubdateLabel)
-        // 製片國家/地區
-        locationLabel.frame = CGRect.init(x: 0, y: pubdateLabel.frame.maxY, width: width, height: 25)
-        locationLabel.font = UIFont(name: "PingFangSC-Regular", size: 12)!
-        locationLabel.numberOfLines = 1
-        locationLabel.text = "製片國家/地區："
-        locationLabel.textColor = .white
-        locationLabel.textAlignment = .center
-        topView.addSubview(locationLabel)
-        
-        self.view.addSubview(topView)
+    private func initHeaderData() {
+        guard let data = viewModel.output.movieDetail.value else { return }
+        headImageView.loadImage(data.images.small, placeHolder: UIImage(named: "placeholder"))
+        movieNameLabel.text = data.title
+        directorLabel.text = getDirectorText(data: data)
+        castLabel.text = getCastText(data: data)
+        genresLabel.text = getGeneresText(data: data)
+        pubdateLabel.text = "上映日期：" + (data.year)
+        countriesLabel.text = getCountriesText(data: data)
     }
     
     private func setBackBtn() {
@@ -159,12 +117,26 @@ class MovieDetailViewController: UIViewController {
         self.view.addSubview(backBtn)
     }
     
-    private func getCastText() -> String {
-        guard let data = movieDeatil?.casts else { return "" }
+    private func getDirectorText(data: MovieObject) -> String {
+        var directorList: [String] = []
+        var directors = ""
+        if !data.directors.isEmpty {
+            data.directors.forEach { (director) in
+                directorList.append(director.name)
+            }
+        }
+        let newItems = Array(directorList.map {[$0]}.joined(separator: ["/"]))
+        newItems.forEach { (cast) in
+            directors.append(cast)
+        }
+        return "導演：" + directors
+    }
+    
+    private func getCastText(data: MovieObject) -> String {
         var castList: [String] = []
         var casts = ""
-        if !data.isEmpty {
-            data.forEach { (cast) in
+        if !data.casts.isEmpty {
+            data.casts.forEach { (cast) in
                 castList.append(cast.name)
             }
         }
@@ -175,15 +147,26 @@ class MovieDetailViewController: UIViewController {
         return "演員：" + casts
     }
     
-    private func getGeneresText() -> String {
+    private func getGeneresText(data: MovieObject) -> String {
         var categories = ""
-        if !(movieDeatil?.genres.isEmpty)! {
-            let newItems = Array(movieDeatil!.genres.map {[$0]}.joined(separator: ["/"]))
+        if !(data.genres.isEmpty) {
+            let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
             newItems.forEach { (category) in
                 categories.append(category)
             }
         }
         return "類型：" + categories
+    }
+    
+    private func getCountriesText(data: MovieObject) -> String {
+        var countries = ""
+        if !(data.countries.isEmpty) {
+            let newItems = Array(data.countries.map {[$0]}.joined(separator: ["/"]))
+            newItems.forEach { (country) in
+                countries.append(country)
+            }
+        }
+        return "製片國家/地區：：" + countries
     }
 }
 
@@ -255,57 +238,42 @@ extension MovieDetailViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if !isViewLoaded || view.window == nil { return }
-        print(scrollView.contentOffset.y)
-        let topPadding = self.view.safeAreaInsets.top
         let offsetY = scrollView.contentOffset.y
-        let radius = -offsetY / heightOfHeader
+        let radius = -offsetY / heightOfTopView
+        let remainHeader = topView.frame.height / 4
         
-        var topViewFrame = topView.frame
-        if scrollView.contentOffset.y < 0 {
-            topViewFrame.origin.y = -(scrollView.contentOffset.y + 150 - topPadding)
+        if offsetY < -heightOfTopView {
+            topViewTopConstraint.constant = -(offsetY + heightOfHeader + heightOfTopView)
         } else {
-            if scrollView.contentOffset.y < 150 - (topViewFrame.height * 3 / 4) {
-                topViewFrame.origin.y = -(scrollView.contentOffset.y)
+            if offsetY < -heightOfTopView + remainHeader {
+                topViewTopConstraint.constant = -(offsetY + heightOfHeader + heightOfTopView)
             } else {
-                topViewFrame.origin.y = -(150 - (topViewFrame.height * 3 / 4))
+                topViewTopConstraint.constant = -(-heightOfTopView + remainHeader + heightOfHeader + heightOfTopView)
+            }
+
+            if radius > 0 {
+                movieNameLabel.frame.origin.y = 100 * (1-radius)
+                directorLabel.alpha = radius
+                castLabel.alpha = radius
+                genresLabel.alpha = radius
+                pubdateLabel.alpha = radius
+                countriesLabel.alpha = radius
+                movieNameLabel.numberOfLines = 2
+            } else {
+                directorLabel.alpha = 0
+                castLabel.alpha = 0
+                genresLabel.alpha = 0
+                pubdateLabel.alpha = 0
+                countriesLabel.alpha = 0
+                movieNameLabel.numberOfLines = 1
             }
         }
-
-//        topViewFrame.origin.y += self.view.safeAreaInsets.top
-        self.topView.frame = topViewFrame
         
-        
-        if (-offsetY > heightOfHeader){
-            headImageView.transform = CGAffineTransform.init(scaleX: radius, y: radius)
-            var frame = headImageView.frame
-            frame.origin.y = offsetY
-            headImageView.frame = frame
-        }
-
-        if radius > 0 {
-            titleLabel.frame = CGRect.init(x: 0, y: (105 * (1-radius)) + topPadding, width: width, height: 25)
-            directorLabel.frame = CGRect.init(x: 0, y: titleLabel.frame.maxY, width: width, height: 25)
-            castLabel.frame = CGRect.init(x: 0, y: directorLabel.frame.maxY, width: width, height: 25)
-            generesLabel.frame = CGRect.init(x: 0, y: castLabel.frame.maxY, width: width, height: 25)
-            pubdateLabel.frame = CGRect.init(x: 0, y: generesLabel.frame.maxY, width: width, height: 25)
-            locationLabel.frame = CGRect.init(x: 0, y: pubdateLabel.frame.maxY, width: width, height: 25)
-
-            directorLabel.alpha = radius
-            castLabel.alpha = radius
-            generesLabel.alpha = radius
-            pubdateLabel.alpha = radius
-            locationLabel.alpha = radius
-            titleLabel.numberOfLines = 2
-
-//            topView.frame = CGRect.init(x: 0, y: 200 - 150 - offsetY, width: width, height: 150)
-        } else {
-            directorLabel.alpha = 0
-            castLabel.alpha = 0
-            generesLabel.alpha = 0
-            pubdateLabel.alpha = 0
-            locationLabel.alpha = 0
-            titleLabel.numberOfLines = 1
-        }
+//        if (-offsetY > heightOfHeader){ // 海報放大
+//            headImageView.transform = CGAffineTransform.init(scaleX: radius, y: radius)
+//            var frame = headImageView.frame
+//            frame.origin.y = offsetY
+//            headImageView.frame = frame
+//        }
     }
 }

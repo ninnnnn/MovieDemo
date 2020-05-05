@@ -10,6 +10,7 @@ import Foundation
 
 struct MovieObject: Codable {
     let title: String
+    let images: Images
     let directors: [Director]
     let genres: [String]
     let year: String
@@ -22,6 +23,7 @@ struct MovieObject: Codable {
     
     enum CodingKeys: String, CodingKey {
         case title
+        case images
         case directors
         case genres
         case year
