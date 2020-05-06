@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="156" id="KGk-i7-Jjw" customClass="CommentCell" customModule="MovieDemo" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="156" id="KGk-i7-Jjw" customClass="CommentCell" customModule="MovieDemo" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="419" height="156"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="72P-Sd-BUa">
-                        <rect key="frame" x="8" y="41" width="128" height="50"/>
+                        <rect key="frame" x="8" y="75.5" width="128" height="50"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="8tY-3d-s7x">
                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -45,22 +45,22 @@
                         </constraints>
                     </stackView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PAd-fT-Mnd">
-                        <rect key="frame" x="380" y="59" width="31" height="14.5"/>
+                        <rect key="frame" x="380" y="93.5" width="31" height="14.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" red="0.34957158570000002" green="0.41883793470000003" blue="0.706436336" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iO0-Up-eNF">
-                        <rect key="frame" x="8" y="99" width="403" height="14.5"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iO0-Up-eNF">
+                        <rect key="frame" x="8" y="133.5" width="403" height="14.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SlI-24-RyD">
-                        <rect key="frame" x="8" y="0.0" width="39" height="17"/>
+                        <rect key="frame" x="8" y="0.0" width="39" height="51.5"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NAx-qX-kh2">
-                                <rect key="frame" x="0.0" y="0.5" width="2" height="16"/>
+                                <rect key="frame" x="0.0" y="18" width="2" height="16"/>
                                 <color key="backgroundColor" name="SubColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="2" id="D9t-bw-UOb"/>
@@ -68,7 +68,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="熱評" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BTN-oM-BPZ">
-                                <rect key="frame" x="10" y="0.0" width="29" height="17"/>
+                                <rect key="frame" x="10" y="17.5" width="29" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -84,6 +84,7 @@
                     <constraint firstAttribute="trailing" secondItem="PAd-fT-Mnd" secondAttribute="trailing" constant="8" id="R2w-KC-NaQ"/>
                     <constraint firstItem="72P-Sd-BUa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="cxT-WJ-Krf"/>
                     <constraint firstItem="iO0-Up-eNF" firstAttribute="top" secondItem="72P-Sd-BUa" secondAttribute="bottom" constant="8" id="dSE-XQ-gae"/>
+                    <constraint firstAttribute="bottom" secondItem="iO0-Up-eNF" secondAttribute="bottom" constant="8" id="gaI-JX-87m"/>
                     <constraint firstItem="72P-Sd-BUa" firstAttribute="top" secondItem="SlI-24-RyD" secondAttribute="bottom" constant="24" id="ih7-V3-vs3"/>
                     <constraint firstItem="PAd-fT-Mnd" firstAttribute="centerY" secondItem="8tY-3d-s7x" secondAttribute="centerY" id="k3h-Ax-1se"/>
                 </constraints>

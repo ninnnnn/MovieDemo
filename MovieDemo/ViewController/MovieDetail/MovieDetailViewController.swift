@@ -36,8 +36,8 @@ class MovieDetailViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let backBtn = UIButton()
     private var viewModel: MovieDetailViewModel!
-    private var headerView = UIView()
     private var headImageView = UIImageView()
+    private var dict = [Int: Int]()
     private var topPadding: CGFloat {
         return self.view.safeAreaInsets.top
     }
@@ -85,14 +85,11 @@ class MovieDetailViewController: UIViewController {
     }
     
     private func initHeaderView() {
-        headerView.frame = CGRect.init(x: 0, y: -(heightOfHeader + topPadding + heightOfTopView), width: width, height: heightOfHeader + topPadding)
-        headerView.backgroundColor = UIColor(named: "MainColor")
-        headImageView.frame = CGRect.init(x: 0, y: topPadding, width: width, height: heightOfHeader)
-        headerView.addSubview(headImageView)
+        headImageView.frame = CGRect.init(x: 0, y: -(heightOfHeader + topPadding + heightOfTopView), width: width, height: heightOfHeader)
         headImageView.contentMode = .scaleAspectFit
         headImageView.clipsToBounds = true
         tableView.contentInset = UIEdgeInsets(top: heightOfHeader + topPadding + heightOfTopView, left: 0, bottom: 0, right: 0)
-        tableView.addSubview(headerView)
+        tableView.addSubview(headImageView)
     }
     
     private func initHeaderData() {
@@ -168,6 +165,21 @@ class MovieDetailViewController: UIViewController {
         }
         return "製片國家/地區：：" + countries
     }
+    
+    private func willExpandLabel(label: UILabel, indexPath: IndexPath, lineCount: Int) -> String {
+        let actualLines = label.lines
+        label.numberOfLines = actualLines > lineCount ? lineCount : actualLines
+        if actualLines > lineCount {
+            // 計算lineCount的字數，在字尾加上"...展開"
+            let charactersCount = label.text?.count
+            print(charactersCount as Any)
+            return "...展開"
+//            tableView.reloadRows(at: [indexPath], with: .left)
+        } else {
+            // 直接顯示目前內容
+            return ""
+        }
+    }
 }
 
 extension MovieDetailViewController: UITableViewDataSource {
@@ -185,7 +197,6 @@ extension MovieDetailViewController: UITableViewDataSource {
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell else { return UITableViewCell() }
             let data = viewModel.output.movieDetail.value?.summary
-            cell.contentLabel.numberOfLines = 5
             cell.setup(data: data ?? "")
             return cell
         case 2:
@@ -227,14 +238,43 @@ extension MovieDetailViewController: UITableViewDelegate {
         case 0:
             return height / 7
         case 1:
-            return height / 4
+            return UITableView.automaticDimension
         case 2:
             return height / 3
         case 3:
             return height / 3
         default:
-            return height / 5
+            return UITableView.automaticDimension
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)
+        tableView.beginUpdates()
+        switch indexPath.row {
+        case 1:
+            guard let cell = cell as? MovieIntroCell else { return }
+            guard let label = cell.contentLabel else { return }
+            
+            if label.numberOfLines == 0 {
+                label.numberOfLines = 5
+                dict[indexPath.row] = 5
+            } else {
+                label.numberOfLines = 0
+                dict[indexPath.row] = 0
+            }
+        default:
+            guard let cell = cell as? CommentCell else { return }
+            guard let label = cell.contentLabel else { return }
+            if label.numberOfLines == 0 {
+                label.numberOfLines = 3
+                dict[indexPath.row] = 3
+            } else {
+                label.numberOfLines = 0
+                dict[indexPath.row] = 0
+            }
+        }
+        tableView.endUpdates()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -269,11 +309,11 @@ extension MovieDetailViewController: UITableViewDelegate {
             }
         }
         
-//        if (-offsetY > heightOfHeader){ // 海報放大
-//            headImageView.transform = CGAffineTransform.init(scaleX: radius, y: radius)
-//            var frame = headImageView.frame
-//            frame.origin.y = offsetY
-//            headImageView.frame = frame
-//        }
+        if (-offsetY > heightOfHeader){ // 海報放大
+            headImageView.transform = CGAffineTransform.init(scaleX: radius, y: radius)
+            var frame = headImageView.frame
+            frame.origin.y = offsetY
+            headImageView.frame = frame
+        }
     }
 }
