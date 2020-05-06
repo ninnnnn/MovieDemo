@@ -28,7 +28,6 @@ class HomeViewModel: ViewModelType, Refreshable {
     let output: Output
     
     private let moviesResult = BehaviorRelay<[Subjects]>(value: [])
-    private let isHotMoviesLoading = BehaviorRelay<Bool>(value: false)
     
     private let disposeBag = DisposeBag()
     
@@ -52,14 +51,14 @@ class HomeViewModel: ViewModelType, Refreshable {
     }
     
     private func getMovies(tabName: HomeTabs) {
-        self.isHotMoviesLoading.accept(true)
+        CustomProgressHUD.show()
         APIService.shared.request(HomeAPI.GetMovies(homeTabs: tabName))
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
-                self?.isHotMoviesLoading.accept(false)
+                CustomProgressHUD.dismiss()
                 self?.moviesResult.accept(model.subjects)
                 }, onError: { [weak self] _ in
-                    self?.isHotMoviesLoading.accept(false)
+                    CustomProgressHUD.showFailure()
                     self?.moviesResult.accept([])
             })
             .disposed(by: self.disposeBag)

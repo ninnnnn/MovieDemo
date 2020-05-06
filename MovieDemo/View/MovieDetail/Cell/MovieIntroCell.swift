@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieIntroCell: UITableViewCell {
+class MovieIntroCell: UITableViewCell, CellType {
 
     @IBOutlet weak var contentLabel: UILabel!
     
@@ -24,7 +24,9 @@ class MovieIntroCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setup(data: String) {
-        contentLabel.text = data
+    func setup(data: Any) {
+        if let data = data as? String {
+            contentLabel.text = data
+        }
     }
 }

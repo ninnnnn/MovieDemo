@@ -10,20 +10,20 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CollectionViewCell" customModule="MovieDemo" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="207" height="322"/>
+            <rect key="frame" x="0.0" y="0.0" width="194" height="326"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="207" height="322"/>
+                <rect key="frame" x="0.0" y="0.0" width="194" height="326"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="LrJ-yp-QZp">
-                        <rect key="frame" x="0.0" y="0.0" width="207" height="276"/>
+                        <rect key="frame" x="0.0" y="0.0" width="194" height="258.5"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="LrJ-yp-QZp" secondAttribute="height" multiplier="3:4" id="Lg8-ZC-icv"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylY-ij-7hV">
-                        <rect key="frame" x="0.0" y="284" width="207" height="30"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylY-ij-7hV">
+                        <rect key="frame" x="0.0" y="266.5" width="194" height="51.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -40,12 +40,12 @@
                 <constraint firstItem="ylY-ij-7hV" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="raL-oN-7b0"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
-            <size key="customSize" width="203" height="342"/>
+            <size key="customSize" width="190" height="346"/>
             <connections>
                 <outlet property="castImageView" destination="LrJ-yp-QZp" id="QI8-NF-hpS"/>
                 <outlet property="descLabel" destination="ylY-ij-7hV" id="Pjw-bx-n06"/>
             </connections>
-            <point key="canvasLocation" x="247.10144927536234" y="250.44642857142856"/>
+            <point key="canvasLocation" x="237.68115942028987" y="251.78571428571428"/>
         </collectionViewCell>
     </objects>
     <resources>

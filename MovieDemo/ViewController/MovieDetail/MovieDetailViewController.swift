@@ -10,6 +10,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+protocol CellType: UITableViewCell {
+    func setup(data: Any)
+}
+
 class MovieDetailViewController: UIViewController {
 
     @IBOutlet weak var movieNameLabel: UILabel!
@@ -17,6 +21,7 @@ class MovieDetailViewController: UIViewController {
     @IBOutlet weak var directorLabel: UILabel!
     @IBOutlet weak var castLabel: UILabel!
     @IBOutlet weak var genresLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var pubdateLabel: UILabel!
     @IBOutlet weak var countriesLabel: UILabel!
     @IBOutlet weak var topViewTopConstraint: NSLayoutConstraint!
@@ -74,13 +79,37 @@ class MovieDetailViewController: UIViewController {
             self?.initHeaderView()
         })
         .disposed(by: disposeBag)
+        
+        viewModel.output.movieTitle
+            .drive(movieNameLabel.rx.text)
+            .disposed(by: self.disposeBag)
+        
+        viewModel.output.directors
+            .bind(to: directorLabel.rx.text)
+            .disposed(by: self.disposeBag)
+        
+        viewModel.output.casts
+        .bind(to: castLabel.rx.text)
+        .disposed(by: self.disposeBag)
+        
+        viewModel.output.genres
+        .bind(to: genresLabel.rx.text)
+        .disposed(by: self.disposeBag)
+        
+        viewModel.output.pubdate
+        .drive(pubdateLabel.rx.text)
+        .disposed(by: self.disposeBag)
+        
+        viewModel.output.countries
+        .bind(to: countriesLabel.rx.text)
+        .disposed(by: self.disposeBag)
     }
     
     private func registerCell() {
         tableView.registerCellWithNib(identifier: String(describing: MovieDetailCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: StarRateCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: MovieIntroCell.self), bundle: nil)
-        tableView.registerCellWithNib(identifier: String(describing: CastIntroCell.self), bundle: nil)
+        tableView.registerCellWithNib(identifier: String(describing: ImageCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: CommentCell.self), bundle: nil)
     }
     
@@ -95,12 +124,6 @@ class MovieDetailViewController: UIViewController {
     private func initHeaderData() {
         guard let data = viewModel.output.movieDetail.value else { return }
         headImageView.loadImage(data.images.small, placeHolder: UIImage(named: "placeholder"))
-        movieNameLabel.text = data.title
-        directorLabel.text = getDirectorText(data: data)
-        castLabel.text = getCastText(data: data)
-        genresLabel.text = getGeneresText(data: data)
-        pubdateLabel.text = "上映日期：" + (data.year)
-        countriesLabel.text = getCountriesText(data: data)
     }
     
     private func setBackBtn() {
@@ -114,58 +137,6 @@ class MovieDetailViewController: UIViewController {
         self.view.addSubview(backBtn)
     }
     
-    private func getDirectorText(data: MovieObject) -> String {
-        var directorList: [String] = []
-        var directors = ""
-        if !data.directors.isEmpty {
-            data.directors.forEach { (director) in
-                directorList.append(director.name)
-            }
-        }
-        let newItems = Array(directorList.map {[$0]}.joined(separator: ["/"]))
-        newItems.forEach { (cast) in
-            directors.append(cast)
-        }
-        return "導演：" + directors
-    }
-    
-    private func getCastText(data: MovieObject) -> String {
-        var castList: [String] = []
-        var casts = ""
-        if !data.casts.isEmpty {
-            data.casts.forEach { (cast) in
-                castList.append(cast.name)
-            }
-        }
-        let newItems = Array(castList.map {[$0]}.joined(separator: ["/"]))
-        newItems.forEach { (cast) in
-            casts.append(cast)
-        }
-        return "演員：" + casts
-    }
-    
-    private func getGeneresText(data: MovieObject) -> String {
-        var categories = ""
-        if !(data.genres.isEmpty) {
-            let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
-            newItems.forEach { (category) in
-                categories.append(category)
-            }
-        }
-        return "類型：" + categories
-    }
-    
-    private func getCountriesText(data: MovieObject) -> String {
-        var countries = ""
-        if !(data.countries.isEmpty) {
-            let newItems = Array(data.countries.map {[$0]}.joined(separator: ["/"]))
-            newItems.forEach { (country) in
-                countries.append(country)
-            }
-        }
-        return "製片國家/地區：：" + countries
-    }
-    
     private func willExpandLabel(label: UILabel, indexPath: IndexPath, lineCount: Int) -> String {
         let actualLines = label.lines
         label.numberOfLines = actualLines > lineCount ? lineCount : actualLines
@@ -174,7 +145,6 @@ class MovieDetailViewController: UIViewController {
             let charactersCount = label.text?.count
             print(charactersCount as Any)
             return "...展開"
-//            tableView.reloadRows(at: [indexPath], with: .left)
         } else {
             // 直接顯示目前內容
             return ""
@@ -184,35 +154,30 @@ class MovieDetailViewController: UIViewController {
 
 extension MovieDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 + 4
+        return viewModel.output.cellData.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: CellType?
         switch indexPath.row {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? StarRateCell else { return UITableViewCell() }
-            let data = viewModel.output.movieDetail.value?.rating.average
-            cell.setup(data: data ?? 0.0)
-            return cell
+            cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? StarRateCell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell else { return UITableViewCell() }
-            let data = viewModel.output.movieDetail.value?.summary
-            cell.setup(data: data ?? "")
-            return cell
+            cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell
         case 2:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
             guard let data = viewModel.output.movieDetail.value?.casts else { return cell }
             collectionViewDataList.removeAll()
-            for cast in data {
+            data.forEach { (cast) in
                 collectionViewDataList.append(CellContent(type: .cast, text: cast.name, imageUrl: cast.avatars.small))
             }
             cell.setup(data: collectionViewDataList)
             return cell
         case 3:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: CastIntroCell.identifier, for: indexPath) as? CastIntroCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
             guard let data = viewModel.output.movieDetail.value?.trailers else { return cell }
             collectionViewDataList.removeAll()
-            for trailer in data {
+            data.forEach { (trailer) in
                 collectionViewDataList.append(CellContent(type: .trailer, text: trailer.title, imageUrl: trailer.medium))
             }
             cell.setup(data: collectionViewDataList)
@@ -229,25 +194,18 @@ extension MovieDetailViewController: UITableViewDataSource {
             }
             return cell
         }
+        
+        let data = self.viewModel.output.cellData.value[indexPath.row]
+        cell?.setup(data: data)
+        if let cell = cell {
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
 }
 
 extension MovieDetailViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch indexPath.row {
-        case 0:
-            return height / 7
-        case 1:
-            return UITableView.automaticDimension
-        case 2:
-            return height / 3
-        case 3:
-            return height / 3
-        default:
-            return UITableView.automaticDimension
-        }
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         tableView.beginUpdates()
@@ -296,6 +254,7 @@ extension MovieDetailViewController: UITableViewDelegate {
                 directorLabel.alpha = radius
                 castLabel.alpha = radius
                 genresLabel.alpha = radius
+                dateLabel.alpha = radius
                 pubdateLabel.alpha = radius
                 countriesLabel.alpha = radius
                 movieNameLabel.numberOfLines = 2
@@ -303,6 +262,7 @@ extension MovieDetailViewController: UITableViewDelegate {
                 directorLabel.alpha = 0
                 castLabel.alpha = 0
                 genresLabel.alpha = 0
+                dateLabel.alpha = 0
                 pubdateLabel.alpha = 0
                 countriesLabel.alpha = 0
                 movieNameLabel.numberOfLines = 1

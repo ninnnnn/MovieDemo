@@ -24,4 +24,5 @@ target 'MovieDemo' do
     pod 'Moya/RxSwift'
 
     pod 'Cosmos'
+    pod 'JGProgressHUD'
 end

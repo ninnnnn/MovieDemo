@@ -9,7 +9,7 @@
 import UIKit
 
 class CommentCell: UITableViewCell {
-
+    
     @IBOutlet weak var categoryStackView: UIStackView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
@@ -35,4 +35,14 @@ class CommentCell: UITableViewCell {
         usefulCountLabel.text = String(data.usefulCount) + " 有用"
         contentLabel.text = data.content
     }
+    
+//    func setup(data: Any) {
+//        if let data = data as? PopularComments {
+//            userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
+//            userNameLabel.text = data.author.name
+//            postTimeLabel.text = data.createdAt
+//            usefulCountLabel.text = String(data.usefulCount) + " 有用"
+//            contentLabel.text = data.content
+//        }
+//    }
 }

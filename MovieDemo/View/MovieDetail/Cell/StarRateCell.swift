@@ -9,14 +9,14 @@
 import UIKit
 import Cosmos
 
-class StarRateCell: UITableViewCell {
+class StarRateCell: UITableViewCell, CellType {
 
     @IBOutlet weak var cosmosView: CosmosView!
     @IBOutlet weak var ratingLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         cosmosView.settings.fillMode = .precise
     }
 
@@ -26,8 +26,10 @@ class StarRateCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setup(data: Double) {
-        ratingLabel.text = "評分：" + String(data)
-        cosmosView.rating = data / 2
+    func setup(data: Any) {
+        if let data = data as? Double {
+            ratingLabel.text = "評分：" + String(data)
+            cosmosView.rating = data / 2
+        }
     }
 }

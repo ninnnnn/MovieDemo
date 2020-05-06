@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CastIntroCell: UITableViewCell {
+class ImageCell: UITableViewCell {
 
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView! {
@@ -41,7 +41,7 @@ class CastIntroCell: UITableViewCell {
     }
 }
 
-extension CastIntroCell: UICollectionViewDataSource {
+extension ImageCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return castList.count
     }
@@ -62,7 +62,7 @@ extension CastIntroCell: UICollectionViewDataSource {
     }
 }
 
-extension CastIntroCell: UICollectionViewDelegateFlowLayout {
+extension ImageCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 24, right: 8)
         return CGSize(width: width / 3, height: 200)

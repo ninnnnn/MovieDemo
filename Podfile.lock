@@ -2,6 +2,7 @@ PODS:
   - Alamofire (5.1.0)
   - Cosmos (21.0.0)
   - IQKeyboardManagerSwift (6.5.5)
+  - JGProgressHUD (2.1)
   - Kingfisher (5.13.4):
     - Kingfisher/Core (= 5.13.4)
   - Kingfisher/Core (5.13.4)
@@ -20,6 +21,7 @@ PODS:
 DEPENDENCIES:
   - Cosmos
   - IQKeyboardManagerSwift
+  - JGProgressHUD
   - Kingfisher
   - Moya/RxSwift
   - RxCocoa
@@ -30,6 +32,7 @@ SPEC REPOS:
     - Alamofire
     - Cosmos
     - IQKeyboardManagerSwift
+    - JGProgressHUD
     - Kingfisher
     - Moya
     - RxCocoa
@@ -40,12 +43,13 @@ SPEC CHECKSUMS:
   Alamofire: 9d5c5f602928e512395b30950c5984eca840093c
   Cosmos: 3dfb6e4ba48bd48b8c9aa2a77048ae11ed114f96
   IQKeyboardManagerSwift: 0fb93310284665245591f50f7a5e38de615960b7
+  JGProgressHUD: aa403e9a5b45cae98903c4600cccdd98c0c3ec90
   Kingfisher: d2279a7abece3c7f25a80cd2b7f363ca5cf3f44c
   Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
 
-PODFILE CHECKSUM: 627e286339f05086dadf51cd31ef9865489fe406
+PODFILE CHECKSUM: 710cf58a6dac259ac29956c18fe4fedc84982cc9
 
 COCOAPODS: 1.9.1
