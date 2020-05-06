@@ -106,11 +106,10 @@ class MovieDetailViewController: UIViewController {
     }
     
     private func registerCell() {
-        tableView.registerCellWithNib(identifier: String(describing: MovieDetailCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: StarRateCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: MovieIntroCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: ImageCell.self), bundle: nil)
-        tableView.registerCellWithNib(identifier: String(describing: CommentCell.self), bundle: nil)
+        tableView.registerCellWithNib(identifier: String(describing: CommentTableViewCell.self), bundle: nil)
     }
     
     private func initHeaderView() {
@@ -165,36 +164,13 @@ extension MovieDetailViewController: UITableViewDataSource {
         case 1:
             cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell
         case 2:
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
-//            guard let data = viewModel.output.movieDetail.value?.casts else { return cell }
-//            collectionViewDataList.removeAll()
-//            data.forEach { (cast) in
-//                collectionViewDataList.append(CellContent(type: .cast, text: cast.name, imageUrl: cast.avatars.small))
-//            }
-//            cell.setup(data: collectionViewDataList)
-//            return cell
             cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
         case 3:
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
-//            guard let data = viewModel.output.movieDetail.value?.trailers else { return cell }
-//            collectionViewDataList.removeAll()
-//            data.forEach { (trailer) in
-//                collectionViewDataList.append(CellContent(type: .trailer, text: trailer.title, imageUrl: trailer.medium))
-//            }
-//            cell.setup(data: collectionViewDataList)
-//            return cell
             cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
+        case 4:
+            cell = tableView.dequeueReusableCell(withIdentifier: CommentTableViewCell.identifier, for: indexPath) as? CommentTableViewCell
         default:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else { return UITableViewCell() }
-            let data = viewModel.output.movieDetail.value?.popularComments[indexPath.row - 4]
-            let defaultData = PopularComments(usefulCount: 0, author: Author(avatar: "", name: ""), content: "", createdAt: "")
-            cell.setup(data: data ?? defaultData)
-            if indexPath.row == 4 {
-                cell.categoryStackView.isHidden = false
-            } else {
-                cell.categoryStackView.isHidden = true
-            }
-            return cell
+            return UITableViewCell()
         }
         
         let data = self.viewModel.output.cellData.value[indexPath.row]
@@ -208,31 +184,23 @@ extension MovieDetailViewController: UITableViewDataSource {
 }
 
 extension MovieDetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 4 {
+            return height / 2
+        } else {
+            return UITableView.automaticDimension
+        }
+    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
+        guard let cell = tableView.cellForRow(at: indexPath) as? MovieIntroCell else { return }
+        guard let label = cell.contentLabel else { return }
         tableView.beginUpdates()
-        switch indexPath.row {
-        case 1:
-            guard let cell = cell as? MovieIntroCell else { return }
-            guard let label = cell.contentLabel else { return }
-            
-            if label.numberOfLines == 0 {
-                label.numberOfLines = 5
-                dict[indexPath.row] = 5
-            } else {
-                label.numberOfLines = 0
-                dict[indexPath.row] = 0
-            }
-        default:
-            guard let cell = cell as? CommentCell else { return }
-            guard let label = cell.contentLabel else { return }
-            if label.numberOfLines == 0 {
-                label.numberOfLines = 3
-                dict[indexPath.row] = 3
-            } else {
-                label.numberOfLines = 0
-                dict[indexPath.row] = 0
-            }
+        if label.numberOfLines == 0 {
+            label.numberOfLines = 5
+            dict[indexPath.row] = 5
+        } else {
+            label.numberOfLines = 0
+            dict[indexPath.row] = 0
         }
         tableView.endUpdates()
     }

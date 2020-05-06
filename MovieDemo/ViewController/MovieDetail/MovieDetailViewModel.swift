@@ -45,12 +45,10 @@ class MovieDetailViewModel: ViewModelType {
         movieDetail
             .map({ [$0?.rating.average as Any,
                     $0?.summary as Any,
-                    $0?.casts.map{[CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars.small)]} as Any,
-                    $0?.trailers.map{[CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)]} as Any,
-                    $0?.popularComments as Any,
-                    $0?.popularComments as Any,
-                    $0?.popularComments as Any,
-                    $0?.popularComments as Any] })
+                    $0?.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars.small)} as Any,
+                    $0?.trailers.map{CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)} as Any,
+                    $0?.popularComments.map{PopularComments(usefulCount: $0.usefulCount, author: $0.author, content: $0.content, createdAt: $0.createdAt)} as Any]
+            })
             .bind(to: cellData)
             .disposed(by: self.disposeBag)
         

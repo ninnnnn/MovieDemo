@@ -18,7 +18,7 @@ class ImageCell: UITableViewCell, CellType {
         }
     }
     
-    var castList: [CellContent] = [] {
+    var cellContentList: [CellContent] = [] {
         didSet {
             self.collectionView.reloadData()
         }
@@ -36,26 +36,22 @@ class ImageCell: UITableViewCell, CellType {
         // Configure the view for the selected state
     }
     
-//    func setup(data: [CellContent]) {
-//        castList = data
-//    }
-    
     func setup(data: Any) {
         if let data = data as? [CellContent] {
-            castList = data
+            self.cellContentList = data
         }
     }
 }
 
 extension ImageCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return castList.count
+        return cellContentList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else {
             return UICollectionViewCell() }
-        let cellIndexPath = castList[indexPath.item]
+        let cellIndexPath = cellContentList[indexPath.item]
         switch cellIndexPath.type {
         case .cast:
             categoryLabel.text = "演職員"
