@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageCell: UITableViewCell {
+class ImageCell: UITableViewCell, CellType {
 
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView! {
@@ -36,8 +36,14 @@ class ImageCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setup(data: [CellContent]) {
-        castList = data
+//    func setup(data: [CellContent]) {
+//        castList = data
+//    }
+    
+    func setup(data: Any) {
+        if let data = data as? [CellContent] {
+            castList = data
+        }
     }
 }
 

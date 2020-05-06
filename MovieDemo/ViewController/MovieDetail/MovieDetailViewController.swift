@@ -165,23 +165,25 @@ extension MovieDetailViewController: UITableViewDataSource {
         case 1:
             cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell
         case 2:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
-            guard let data = viewModel.output.movieDetail.value?.casts else { return cell }
-            collectionViewDataList.removeAll()
-            data.forEach { (cast) in
-                collectionViewDataList.append(CellContent(type: .cast, text: cast.name, imageUrl: cast.avatars.small))
-            }
-            cell.setup(data: collectionViewDataList)
-            return cell
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
+//            guard let data = viewModel.output.movieDetail.value?.casts else { return cell }
+//            collectionViewDataList.removeAll()
+//            data.forEach { (cast) in
+//                collectionViewDataList.append(CellContent(type: .cast, text: cast.name, imageUrl: cast.avatars.small))
+//            }
+//            cell.setup(data: collectionViewDataList)
+//            return cell
+            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
         case 3:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
-            guard let data = viewModel.output.movieDetail.value?.trailers else { return cell }
-            collectionViewDataList.removeAll()
-            data.forEach { (trailer) in
-                collectionViewDataList.append(CellContent(type: .trailer, text: trailer.title, imageUrl: trailer.medium))
-            }
-            cell.setup(data: collectionViewDataList)
-            return cell
+//            guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell else { return UITableViewCell() }
+//            guard let data = viewModel.output.movieDetail.value?.trailers else { return cell }
+//            collectionViewDataList.removeAll()
+//            data.forEach { (trailer) in
+//                collectionViewDataList.append(CellContent(type: .trailer, text: trailer.title, imageUrl: trailer.medium))
+//            }
+//            cell.setup(data: collectionViewDataList)
+//            return cell
+            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
         default:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else { return UITableViewCell() }
             let data = viewModel.output.movieDetail.value?.popularComments[indexPath.row - 4]
