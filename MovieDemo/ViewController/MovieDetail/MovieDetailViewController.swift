@@ -109,11 +109,11 @@ class MovieDetailViewController: UIViewController {
         tableView.registerCellWithNib(identifier: String(describing: StarRateCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: MovieIntroCell.self), bundle: nil)
         tableView.registerCellWithNib(identifier: String(describing: ImageCell.self), bundle: nil)
-        tableView.registerCellWithNib(identifier: String(describing: CommentTableViewCell.self), bundle: nil)
+        tableView.registerCellWithNib(identifier: String(describing: CommentCell.self), bundle: nil)
     }
     
     private func initHeaderView() {
-        headImageView.frame = CGRect.init(x: 0, y: -(heightOfHeader + topPadding + heightOfTopView), width: width, height: heightOfHeader)
+        headImageView.frame = CGRect.init(x: 0, y: -(heightOfHeader + heightOfTopView), width: width, height: heightOfHeader)
         headImageView.contentMode = .scaleAspectFit
         headImageView.clipsToBounds = true
         tableView.contentInset = UIEdgeInsets(top: heightOfHeader + topPadding + heightOfTopView, left: 0, bottom: 0, right: 0)
@@ -160,15 +160,20 @@ extension MovieDetailViewController: UITableViewDataSource {
         var cell: CellType?
         switch indexPath.row {
         case 0:
-            cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? StarRateCell
+            cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? CellType
         case 1:
-            cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? MovieIntroCell
+            cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? CellType
         case 2:
-            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
+            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
         case 3:
-            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? ImageCell
-        case 4:
-            cell = tableView.dequeueReusableCell(withIdentifier: CommentTableViewCell.identifier, for: indexPath) as? CommentTableViewCell
+            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
+        case let x where x > 3:
+            cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CellType
+            if indexPath.row == 4 {
+                (cell as? CommentCell)?.categoryStackView.isHidden = false
+            } else {
+                (cell as? CommentCell)?.categoryStackView.isHidden = true
+            }
         default:
             return UITableViewCell()
         }
@@ -185,22 +190,33 @@ extension MovieDetailViewController: UITableViewDataSource {
 
 extension MovieDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 4 {
-            return height / 2
-        } else {
-            return UITableView.automaticDimension
-        }
+        return UITableView.automaticDimension
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? MovieIntroCell else { return }
-        guard let label = cell.contentLabel else { return }
+        let cell = tableView.cellForRow(at: indexPath)
         tableView.beginUpdates()
-        if label.numberOfLines == 0 {
-            label.numberOfLines = 5
-            dict[indexPath.row] = 5
-        } else {
-            label.numberOfLines = 0
-            dict[indexPath.row] = 0
+        switch indexPath.row {
+        case 1:
+            guard let cell = cell as? MovieIntroCell else { return }
+            guard let label = cell.contentLabel else { return }
+            if label.numberOfLines == 0 {
+                label.numberOfLines = 5
+                dict[indexPath.row] = 5
+            } else {
+                label.numberOfLines = 0
+                dict[indexPath.row] = 0
+            }
+        default:
+            guard let cell = cell as? CommentCell else { return }
+            guard let label = cell.contentLabel else { return }
+            if label.numberOfLines == 0 {
+                label.numberOfLines = 3
+                dict[indexPath.row] = 3
+            } else {
+                label.numberOfLines = 0
+                dict[indexPath.row] = 0
+            }
         }
         tableView.endUpdates()
     }

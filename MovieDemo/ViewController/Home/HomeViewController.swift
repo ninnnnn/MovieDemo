@@ -22,24 +22,13 @@ class HomeViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     private var viewModel: HomeViewModel!
+    private var filteredModels: [HomeViewModel] = [] {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
     
     let searchController = UISearchController(searchResultsController: nil)
-    
-    lazy var searchTextField: UITextField? = { [unowned self] in
-        var textField: UITextField?
-        self.searchController.searchBar.subviews.forEach({ view in
-            view.subviews.forEach({ view in
-                if let view  = view as? UITextField {
-                    textField = view
-                }
-            })
-        })
-        return textField
-    }()
-    
-    lazy var refreshControl: RxRefreshControl = {
-        return RxRefreshControl(viewModel)
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +36,7 @@ class HomeViewController: UIViewController {
         
         registerCell()
         setNavigationBar()
+        setSearchController()
         binding()
     }
     
@@ -83,10 +73,17 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor(named: "MainColor")
         navigationController?.navigationBar.barTintColor = UIColor(named: "MainColor")
         navigationItem.title = "豆瓣電影"
-        searchController.searchBar.placeholder = "Search for movie"
-        searchController.searchBar.backgroundImage = UIImage()
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
-        
+    }
+    
+    private func setSearchController() {
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.backgroundImage = UIImage()
+        searchController.searchBar.backgroundColor = UIColor(named: "MainColor")
+        searchController.searchBar.placeholder = "輸入電影名稱"
+        searchController.hidesNavigationBarDuringPresentation = false
     }
 }
 
@@ -112,5 +109,24 @@ extension HomeViewController: UITableViewDelegate {
         guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
         detailVC.movieId = self.viewModel.output.movieList.value[indexPath.row].id
         self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+extension HomeViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let term = searchController.searchBar.text {
+            filterRowsForSearchedText(term)
+        }
+    }
+    
+    func filterRowsForSearchedText(_ searchText: String) {
+//        if searchText.isEmpty {
+//            filteredModels = ratedList
+//        } else {
+//            filteredModels = ratedList.filter({( model: Cafe) -> Bool in
+//                return model.name.lowercased().contains(searchText.lowercased())
+//            })
+//        }
+        tableView.reloadData()
     }
 }

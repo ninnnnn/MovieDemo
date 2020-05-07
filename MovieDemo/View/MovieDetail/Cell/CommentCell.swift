@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CommentCell: UITableViewCell {
+class CommentCell: UITableViewCell, CellType {
     
     @IBOutlet weak var categoryStackView: UIStackView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -16,9 +16,7 @@ class CommentCell: UITableViewCell {
     @IBOutlet weak var postTimeLabel: UILabel!
     @IBOutlet weak var usefulCountLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
-    
-    var indexPath: IndexPath?
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -30,11 +28,13 @@ class CommentCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setup(data: PopularComments) {
-        userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
-        userNameLabel.text = data.author.name
-        postTimeLabel.text = data.createdAt
-        usefulCountLabel.text = String(data.usefulCount) + " 有用"
-        contentLabel.text = data.content
+    func setup(data: Any) {
+        if let data = data as? PopularComments {
+            userImageView.loadImage(data.author.avatar, placeHolder: UIImage(named: "placeholder"))
+            userNameLabel.text = data.author.name
+            postTimeLabel.text = data.createdAt
+            usefulCountLabel.text = String(data.usefulCount) + " 有用"
+            contentLabel.text = data.content
+        }
     }
 }

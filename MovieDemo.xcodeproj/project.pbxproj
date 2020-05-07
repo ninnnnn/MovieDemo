@@ -58,8 +58,6 @@
 		0DF7C5BE2462BC7C003F3C63 /* JGProgressHUDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF7C5BD2462BC7C003F3C63 /* JGProgressHUDWrapper.swift */; };
 		54BFB1F9419F33DA06354A85 /* Pods_MovieDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C85F274F484159986987BA5E /* Pods_MovieDemoTests.framework */; };
 		5D992ED67244B50E5F714681 /* Pods_MovieDemo_MovieDemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B47D21128BAEA16CBE0B9CF4 /* Pods_MovieDemo_MovieDemoUITests.framework */; };
-		BE50DF7B24631B9100ECA097 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE50DF7924631B9100ECA097 /* CommentTableViewCell.swift */; };
-		BE50DF7C24631B9100ECA097 /* CommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE50DF7A24631B9100ECA097 /* CommentTableViewCell.xib */; };
 		C61FC8158308EFD5D92E7A28 /* Pods_MovieDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E6812D72E0D35BC8943A93 /* Pods_MovieDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -143,8 +141,6 @@
 		4782EF5CFAB00B4F8A0BA4C4 /* Pods-MovieDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieDemo.release.xcconfig"; path = "Target Support Files/Pods-MovieDemo/Pods-MovieDemo.release.xcconfig"; sourceTree = "<group>"; };
 		77DD9AFB381EB7B506C715C0 /* Pods-MovieDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieDemo.debug.xcconfig"; path = "Target Support Files/Pods-MovieDemo/Pods-MovieDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		B47D21128BAEA16CBE0B9CF4 /* Pods_MovieDemo_MovieDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieDemo_MovieDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE50DF7924631B9100ECA097 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
-		BE50DF7A24631B9100ECA097 /* CommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommentTableViewCell.xib; sourceTree = "<group>"; };
 		C85F274F484159986987BA5E /* Pods_MovieDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFB850D38B2EEE214F02ACDB /* Pods-MovieDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieDemoTests.debug.xcconfig"; path = "Target Support Files/Pods-MovieDemoTests/Pods-MovieDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -422,8 +418,6 @@
 				0DF7C59924582774003F3C63 /* MovieIntroCell.xib */,
 				0DF7C59C245827AB003F3C63 /* ImageCell.swift */,
 				0DF7C59D245827AB003F3C63 /* ImageCell.xib */,
-				BE50DF7924631B9100ECA097 /* CommentTableViewCell.swift */,
-				BE50DF7A24631B9100ECA097 /* CommentTableViewCell.xib */,
 				0DF7C5A0245827CD003F3C63 /* CommentCell.swift */,
 				0DF7C5A1245827CD003F3C63 /* CommentCell.xib */,
 				0DF7C5A42459917A003F3C63 /* CollectionViewCell.swift */,
@@ -557,7 +551,6 @@
 				0DF7C51C2452C99F003F3C63 /* Assets.xcassets in Resources */,
 				0DF7C51A2452C99E003F3C63 /* Main.storyboard in Resources */,
 				0DF7C5512452CD11003F3C63 /* HomeMovieCell.xib in Resources */,
-				BE50DF7C24631B9100ECA097 /* CommentTableViewCell.xib in Resources */,
 				0DF7C59724582755003F3C63 /* StarRateCell.xib in Resources */,
 				0DF7C5A3245827CD003F3C63 /* CommentCell.xib in Resources */,
 				0DF7C59B24582774003F3C63 /* MovieIntroCell.xib in Resources */,
@@ -725,7 +718,6 @@
 				0DF7C5B0245AA015003F3C63 /* MovieDetailAPI.swift in Sources */,
 				0DF7C57E2456734C003F3C63 /* APIService.swift in Sources */,
 				0DF7C5522452CD11003F3C63 /* HomeMovieCell.swift in Sources */,
-				BE50DF7B24631B9100ECA097 /* CommentTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
