@@ -22,11 +22,6 @@ class HomeViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     private var viewModel: HomeViewModel!
-    private var filteredModels: [HomeViewModel] = [] {
-        didSet {
-            self.tableView.reloadData()
-        }
-    }
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -40,33 +35,38 @@ class HomeViewController: UIViewController {
         binding()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.refreshData()
-    }
-
     private func registerCell() {
         tableView.registerCellWithNib(identifier: String(describing: HomeMovieCell.self), bundle: nil)
     }
     
     private func binding() {
-        DataManager.shared.tabData
-            .map({ $0 })
-            .bind(to: tabView.dataArray)
-            .disposed(by: self.disposeBag)
+        DataManager.shared.tabData.subscribe(onNext: { [weak self] (tabDataList) in
+            self?.tabView.dataArray.accept(tabDataList)
+            self?.tabView.updateDefualtSelect(tabDataList[0])
+        }).disposed(by: self.disposeBag)
         
         // input
-        tabView.didTapItem
-            .map({ $0?.title ?? HomeTabs.getInTheater.rawValue })
-            .bind(to: viewModel.input.tabName)
-            .disposed(by: disposeBag)
+        tabView.didTapItem.map { (tabData) -> Int in
+            CustomProgressHUD.show()
+            return tabData?.id ?? 1
+        }
+        .bind(to: viewModel.input.tabName)
+        .disposed(by: self.disposeBag)
         
         // output
         viewModel.output.movieList
-        .subscribe(onNext: { [weak self] _ in
-            self?.tableView.reloadData()
-        })
-        .disposed(by: disposeBag)
+            .subscribe(onNext: { [weak self] _ in
+                CustomProgressHUD.dismiss()
+                self?.tableView.reloadData()
+            })
+            .disposed(by: self.disposeBag)
+        
+        viewModel.output.weeklyAndUSList
+            .subscribe(onNext: { [weak self] _ in
+                CustomProgressHUD.dismiss()
+                self?.tableView.reloadData()
+            })
+            .disposed(by: self.disposeBag)
     }
     
     private func setNavigationBar() {
@@ -79,7 +79,6 @@ class HomeViewController: UIViewController {
     
     private func setSearchController() {
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchResultsUpdater = self
         searchController.searchBar.backgroundImage = UIImage()
         searchController.searchBar.backgroundColor = UIColor(named: "MainColor")
         searchController.searchBar.placeholder = "輸入電影名稱"
@@ -89,13 +88,26 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.output.movieList.value.count
+        let didTapItem = tabView.didTapItem.value
+        switch didTapItem?.id {
+        case 4, 5:
+            return viewModel.output.weeklyAndUSList.value.count
+        default:
+            return viewModel.output.movieList.value.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: HomeMovieCell.identifier, for: indexPath) as? HomeMovieCell else { return UITableViewCell()}
-        let data = viewModel.output.movieList.value[indexPath.row]
-        cell.setupData(data: data)
+        let didTapItem = tabView.didTapItem.value
+        switch didTapItem?.id {
+        case 4, 5:
+            let data = viewModel.output.weeklyAndUSList.value[indexPath.row].subject
+            cell.setupData(data: data)
+        default:
+            let data = viewModel.output.movieList.value[indexPath.row]
+            cell.setupData(data: data)
+        }
         return cell
     }
 }
@@ -107,26 +119,15 @@ extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
-        detailVC.movieId = self.viewModel.output.movieList.value[indexPath.row].id
-        self.navigationController?.pushViewController(detailVC, animated: true)
-    }
-}
-
-extension HomeViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        if let term = searchController.searchBar.text {
-            filterRowsForSearchedText(term)
+        let didTapItem = tabView.didTapItem.value
+        var id: String = ""
+        switch didTapItem?.id {
+        case 4, 5:
+            id = self.viewModel.output.weeklyAndUSList.value[indexPath.row].subject.id
+        default:
+            id = self.viewModel.output.movieList.value[indexPath.row].id
         }
-    }
-    
-    func filterRowsForSearchedText(_ searchText: String) {
-//        if searchText.isEmpty {
-//            filteredModels = ratedList
-//        } else {
-//            filteredModels = ratedList.filter({( model: Cafe) -> Bool in
-//                return model.name.lowercased().contains(searchText.lowercased())
-//            })
-//        }
-        tableView.reloadData()
+        detailVC.movieId = id
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

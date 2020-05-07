@@ -72,13 +72,17 @@ class MovieDetailViewController: UIViewController {
     
     private func binding() {
         // output
+        CustomProgressHUD.show()
         viewModel.output.movieDetail
-        .subscribe(onNext: { [weak self] _ in
-            self?.tableView.reloadData()
-            self?.initHeaderData()
-            self?.initHeaderView()
-        })
-        .disposed(by: disposeBag)
+            .subscribe(onNext: { [weak self] _ in
+                CustomProgressHUD.dismiss()
+                self?.tableView.reloadData()
+                self?.initHeaderData()
+                self?.initHeaderView()
+                }, onError: { _ in
+                    CustomProgressHUD.showFailure()
+            })
+            .disposed(by: self.disposeBag)
         
         viewModel.output.movieTitle
             .drive(movieNameLabel.rx.text)

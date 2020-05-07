@@ -48,32 +48,38 @@ class HomeMovieCell: UITableViewCell {
         movieImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
     }
     
-    func setupData(data: Subjects) {
-        movieImageView.loadImage(data.images?.small)
-        titleLabel.text = data.title
-        pubdateLabel.text = "上映日期：" + (data.mainlandPubdate ?? "")
-        
-        if data.durations.isEmpty {
-            durationsLabel.text = "片長："
-        } else {
+    func setupData(data: Any) {
+        switch data {
+        case let data where data is Subject:
+            guard let data = data as? Subject else { return }
+            movieImageView.loadImage(data.images?.small)
+            titleLabel.text = data.title
+            pubdateLabel.text = "上映日期：" + (data.mainlandPubdate ?? "")
             durationsLabel.text = "片長：" + data.durations[0]
-        }
-        
-        var categories = ""
-        if !data.genres.isEmpty {
-            let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
-            newItems.forEach { (category) in
-                categories.append(category)
+
+            var categories = ""
+            if !data.genres.isEmpty {
+                let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
+                newItems.forEach { (category) in
+                    categories.append(category)
+                }
             }
+            categoryLabel.text = "類型：" + categories
+        default:
+            guard let data = data as? Subjects else { return }
+            movieImageView.loadImage(data.images?.small)
+            titleLabel.text = data.title
+            pubdateLabel.text = "上映日期：" + (data.mainlandPubdate ?? "")
+            durationsLabel.text = data.durations.isEmpty ? "片長：" : "片長：" + data.durations[0]
+            
+            var categories = ""
+            if !data.genres.isEmpty {
+                let newItems = Array(data.genres.map {[$0]}.joined(separator: ["/"]))
+                newItems.forEach { (category) in
+                    categories.append(category)
+                }
+            }
+            categoryLabel.text = "類型：" + categories
         }
-        categoryLabel.text = "類型：" + categories
     }
-    
-//    func setupData(viewModel: HomeMovieCellViewModel) {
-//        movieImageView.loadImage(viewModel.movieImageUrl)
-//        titleLabel.text = viewModel.title
-//        categoryLabel.text = viewModel.category
-//        pubdateLabel.text = viewModel.pubdate
-//        durationsLabel.text = viewModel.durations
-//    }
 }

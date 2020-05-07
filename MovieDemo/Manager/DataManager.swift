@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-struct TabData: ScrollableTabViewData {
+struct TabData: ScrollableTabViewData, Equatable {
     var id: Int?
     let title: String
 }

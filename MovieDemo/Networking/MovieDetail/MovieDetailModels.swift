@@ -65,7 +65,7 @@ struct Author: Codable {
 }
 
 struct Cast: Codable {
-    let avatars: Images
+    let avatars: Images?
     let name: String
 }
 

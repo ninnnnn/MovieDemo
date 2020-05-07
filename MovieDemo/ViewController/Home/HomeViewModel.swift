@@ -10,71 +10,62 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class HomeViewModel: ViewModelType, Refreshable {
-    var endRefresh: PublishSubject<Void> = PublishSubject<Void>()
-    func refreshData() {
-        getMovies(tabName: HomeTabs.getInTheater)
-    }
+class HomeViewModel: ViewModelType {
     
     struct Input {
-        let tabName: AnyObserver<String>
+        let tabName: AnyObserver<Int>
     }
     
     struct Output {
         let movieList: BehaviorRelay<[Subjects]>
+        let weeklyAndUSList: BehaviorRelay<[Subjects2]>
     }
     
     let input: Input
     let output: Output
     
     private let moviesResult = BehaviorRelay<[Subjects]>(value: [])
+    private let weeklyAndUSResult = BehaviorRelay<[Subjects2]>(value: [])
     
     private let disposeBag = DisposeBag()
     
     init() {
-        let tabName = PublishSubject<String>()
+        let tabName = PublishSubject<Int>()
         
         self.input = Input(tabName: tabName.asObserver())
-        self.output = Output(movieList: moviesResult)
+        self.output = Output(movieList: moviesResult,
+                             weeklyAndUSList: weeklyAndUSResult)
         
         tabName
-            .subscribe(onNext: { [weak self] (tabName) in
-                guard let strongSelf = self else { return }
-                strongSelf.getMovies(tabName: HomeTabs(rawValue: tabName)!)
-//                if tabName == "口碑榜" || tabName == "北美票房榜" {
-//                    strongSelf.getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs(rawValue: tabName)!)
-//                } else {
-//                    strongSelf.getMovies(tabName: HomeTabs(rawValue: tabName)!)
-//                }
+            .subscribe(onNext: { [weak self] (tabId) in
+                if tabId == 4 || tabId == 5 {
+                    self?.getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs(rawValue: tabId)!)
+                } else {
+                    self?.getMovies(tabName: HomeTabs(rawValue: tabId)!)
+                }
             })
             .disposed(by: disposeBag)
     }
     
     private func getMovies(tabName: HomeTabs) {
-        CustomProgressHUD.show()
         APIService.shared.request(HomeAPI.GetMovies(homeTabs: tabName))
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
-                CustomProgressHUD.dismiss()
                 self?.moviesResult.accept(model.subjects)
                 }, onError: { [weak self] _ in
-                    CustomProgressHUD.showFailure()
                     self?.moviesResult.accept([])
             })
             .disposed(by: self.disposeBag)
     }
     
-//    private func getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs) {
-//        self.isHotMoviesLoading.accept(true)
-//        APIService.shared.request(HomeAPI.GetWeeklyAndUSMovies(tabs: tabName))
-//            .subscribeOn(MainScheduler.instance)
-//            .subscribe(onSuccess: { [weak self] (model) in
-//                self?.isHotMoviesLoading.accept(false)
-//                self?.moviesResult.accept(model.subjects)
-//                }, onError: { [weak self] _ in
-//                    self?.isHotMoviesLoading.accept(false)
-//                    self?.moviesResult.accept([])
-//            })
-//            .disposed(by: self.disposeBag)
-//    }
+    private func getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs) {
+        APIService.shared.request(HomeAPI.GetWeeklyAndUSMovies(tabs: tabName))
+            .subscribeOn(MainScheduler.instance)
+            .subscribe(onSuccess: { [weak self] (model) in
+                self?.weeklyAndUSResult.accept(model.subjects)
+                }, onError: { [weak self] _ in
+                    self?.weeklyAndUSResult.accept([])
+            })
+            .disposed(by: self.disposeBag)
+    }
 }

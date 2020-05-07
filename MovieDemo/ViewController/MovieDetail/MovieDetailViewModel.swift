@@ -13,7 +13,7 @@ import RxCocoa
 class MovieDetailViewModel: ViewModelType {
     
     struct Input {
-        let movieId: AnyObserver<Int>
+        
     }
     
     struct Output {
@@ -36,7 +36,6 @@ class MovieDetailViewModel: ViewModelType {
     
     init(eventId: String) {
         
-        let movieId = PublishSubject<Int>()
         let cellData = BehaviorRelay<[Any]>(value: [])
         
         let movieTitle = movieDetail.compactMap({ $0?.title }).asDriver(onErrorJustReturn: "電影名稱")
@@ -47,7 +46,7 @@ class MovieDetailViewModel: ViewModelType {
             var dataList = [
                 movieObject.rating.average as Any,
                 movieObject.summary as Any,
-                movieObject.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars.small)} as Any,
+                movieObject.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars?.small ?? "")} as Any,
                 movieObject.trailers.map{CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)} as Any,
             ]
             for comment in movieObject.popularComments as [PopularComments] {
@@ -118,7 +117,7 @@ class MovieDetailViewModel: ViewModelType {
         }
 
         
-        self.input = Input(movieId: movieId.asObserver())
+        self.input = Input()
         self.output = Output(movieDetail: movieDetail,
                              movieTitle: movieTitle,
                              directors: directors,
@@ -132,14 +131,11 @@ class MovieDetailViewModel: ViewModelType {
     }
     
     private func getMovieDetails(movieId: String) {
-        CustomProgressHUD.show()
         APIService.shared.request(MovieDetailAPI.GetMovieDetail(movieId: movieId))
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
-                CustomProgressHUD.dismiss()
                 self?.movieDetail.accept(model)
             }, onError: { [weak self] _ in
-                CustomProgressHUD.showFailure()
                 self?.movieDetail.accept(nil)
             })
             .disposed(by: disposeBag)
