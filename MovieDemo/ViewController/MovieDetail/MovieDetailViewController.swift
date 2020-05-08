@@ -15,7 +15,7 @@ protocol CellType: UITableViewCell {
 }
 
 class MovieDetailViewController: UIViewController {
-
+    
     @IBOutlet weak var movieNameLabel: UILabel!
     @IBOutlet weak var topView: UIView!
     @IBOutlet weak var directorLabel: UILabel!
@@ -54,7 +54,7 @@ class MovieDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = MovieDetailViewModel(eventId: movieId)
-
+        
         registerCell()
         setBackBtn()
         binding()
@@ -72,8 +72,10 @@ class MovieDetailViewController: UIViewController {
     
     private func binding() {
         // output
-        CustomProgressHUD.show()
         viewModel.output.movieDetail
+            .do(onNext: { (_) in
+                CustomProgressHUD.show()
+            })
             .subscribe(onNext: { [weak self] _ in
                 CustomProgressHUD.dismiss()
                 self?.tableView.reloadData()
@@ -93,20 +95,20 @@ class MovieDetailViewController: UIViewController {
             .disposed(by: self.disposeBag)
         
         viewModel.output.casts
-        .bind(to: castLabel.rx.text)
-        .disposed(by: self.disposeBag)
+            .bind(to: castLabel.rx.text)
+            .disposed(by: self.disposeBag)
         
         viewModel.output.genres
-        .bind(to: genresLabel.rx.text)
-        .disposed(by: self.disposeBag)
+            .bind(to: genresLabel.rx.text)
+            .disposed(by: self.disposeBag)
         
         viewModel.output.pubdate
-        .drive(pubdateLabel.rx.text)
-        .disposed(by: self.disposeBag)
+            .drive(pubdateLabel.rx.text)
+            .disposed(by: self.disposeBag)
         
         viewModel.output.countries
-        .bind(to: countriesLabel.rx.text)
-        .disposed(by: self.disposeBag)
+            .bind(to: countriesLabel.rx.text)
+            .disposed(by: self.disposeBag)
     }
     
     private func registerCell() {
@@ -238,7 +240,7 @@ extension MovieDetailViewController: UITableViewDelegate {
             } else {
                 topViewTopConstraint.constant = -(-heightOfTopView + remainHeader + heightOfHeader + heightOfTopView)
             }
-
+            
             if radius > 0 {
                 movieNameLabel.frame.origin.y = 100 * (1-radius)
                 directorLabel.alpha = radius

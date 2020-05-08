@@ -46,22 +46,15 @@ class HomeViewController: UIViewController {
         }).disposed(by: self.disposeBag)
         
         // input
-        tabView.didTapItem.map { (tabData) -> Int in
+        tabView.didTapItem.do(onNext: { (_) in
             CustomProgressHUD.show()
-            return tabData?.id ?? 1
-        }
-        .bind(to: viewModel.input.tabName)
-        .disposed(by: self.disposeBag)
-        
-        // output
-        viewModel.output.movieList
-            .subscribe(onNext: { [weak self] _ in
-                CustomProgressHUD.dismiss()
-                self?.tableView.reloadData()
-            })
+        })
+            .map({ $0?.id ?? 1 })
+            .bind(to: viewModel.input.tabName)
             .disposed(by: self.disposeBag)
         
-        viewModel.output.weeklyAndUSList
+        // output
+        viewModel.output.reloadData
             .subscribe(onNext: { [weak self] _ in
                 CustomProgressHUD.dismiss()
                 self?.tableView.reloadData()

@@ -19,6 +19,7 @@ class HomeViewModel: ViewModelType {
     struct Output {
         let movieList: BehaviorRelay<[Subjects]>
         let weeklyAndUSList: BehaviorRelay<[Subjects2]>
+        let reloadData: Observable<Void>
     }
     
     let input: Input
@@ -31,10 +32,12 @@ class HomeViewModel: ViewModelType {
     
     init() {
         let tabName = PublishSubject<Int>()
+        let reloadData = Observable.of(moviesResult.asObservable().map({ _ in }), weeklyAndUSResult.asObservable().map({ _ in })).merge()
         
         self.input = Input(tabName: tabName.asObserver())
         self.output = Output(movieList: moviesResult,
-                             weeklyAndUSList: weeklyAndUSResult)
+                             weeklyAndUSList: weeklyAndUSResult,
+                             reloadData: reloadData)
         
         tabName
             .subscribe(onNext: { [weak self] (tabId) in

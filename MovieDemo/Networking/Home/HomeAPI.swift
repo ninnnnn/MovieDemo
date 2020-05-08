@@ -14,11 +14,6 @@ protocol HomeAPITargetType: ApiTargetType {}
 extension HomeAPITargetType {}
 
 enum HomeTabs: Int {
-//    case getInTheater = "正在熱映"
-//    case getComingSoon = "即將上映"
-//    case getTop250 = "Top250"
-//    case getNewMovies = "新片"
-    
     case getInTheater = 1
     case getComingSoon = 2
     case getTop250 = 3
@@ -26,9 +21,6 @@ enum HomeTabs: Int {
 }
 
 enum WeeklyAndUSTabs: Int {
-//    case getWeekly = "口碑榜"
-//    case getUSBox = "北美票房榜"
-    
     case getWeekly = 4
     case getUSBox = 5
 }
