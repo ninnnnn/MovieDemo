@@ -37,7 +37,7 @@ struct MovieObject: Codable {
 }
 
 struct Director: Codable {
-    let avatars: Images
+    let avatars: Images?
     let name: String
 }
 
@@ -75,7 +75,6 @@ struct Trailer: Codable {
 }
 
 // Custom model type for collectionView cell
-
 enum ModelType {
     case cast
     case trailer

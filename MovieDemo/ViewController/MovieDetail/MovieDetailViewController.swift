@@ -21,7 +21,6 @@ class MovieDetailViewController: UIViewController {
     @IBOutlet weak var directorLabel: UILabel!
     @IBOutlet weak var castLabel: UILabel!
     @IBOutlet weak var genresLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var pubdateLabel: UILabel!
     @IBOutlet weak var countriesLabel: UILabel!
     @IBOutlet weak var topViewTopConstraint: NSLayoutConstraint!
@@ -33,8 +32,6 @@ class MovieDetailViewController: UIViewController {
     }
     
     var movieId: String!
-    var states: [Bool] = [true, true, true, true]
-    var collectionViewDataList: [CellContent] = []
     
     private let heightOfHeader = height / 2
     private let heightOfTopView: CGFloat = 150
@@ -42,7 +39,6 @@ class MovieDetailViewController: UIViewController {
     private let backBtn = UIButton()
     private var viewModel: MovieDetailViewModel!
     private var headImageView = UIImageView()
-    private var dict = [Int: Int]()
     private var topPadding: CGFloat {
         return self.view.safeAreaInsets.top
     }
@@ -71,7 +67,29 @@ class MovieDetailViewController: UIViewController {
     }
     
     private func binding() {
+        // input
+        tableView.rx.itemSelected
+            .bind(to: viewModel.input.indexPathOfCell)
+            .disposed(by: self.disposeBag)
+        
         // output
+        viewModel.output.labelNumsOfLines
+            .subscribe(onNext: { [weak self] obj in
+                guard let obj = obj else { return }
+                self?.tableView.beginUpdates()
+                switch obj.0.row {
+                case 1:
+                    guard let cell = self?.tableView.cellForRow(at: obj.0) as? MovieIntroCell else { return }
+                    cell.contentLabel.numberOfLines = obj.1
+                case let x where x > 3:
+                    guard let cell = self?.tableView.cellForRow(at: obj.0) as? CommentCell else { return }
+                    cell.contentLabel.numberOfLines = obj.1
+                default: return
+                }
+                self?.tableView.endUpdates()
+            })
+            .disposed(by: self.disposeBag)
+        
         viewModel.output.movieDetail
             .do(onNext: { (_) in
                 CustomProgressHUD.show()
@@ -103,7 +121,7 @@ class MovieDetailViewController: UIViewController {
             .disposed(by: self.disposeBag)
         
         viewModel.output.pubdate
-            .drive(pubdateLabel.rx.text)
+            .bind(to: pubdateLabel.rx.text)
             .disposed(by: self.disposeBag)
         
         viewModel.output.countries
@@ -140,20 +158,6 @@ class MovieDetailViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         self.view.addSubview(backBtn)
-    }
-    
-    private func willExpandLabel(label: UILabel, indexPath: IndexPath, lineCount: Int) -> String {
-        let actualLines = label.lines
-        label.numberOfLines = actualLines > lineCount ? lineCount : actualLines
-        if actualLines > lineCount {
-            // 計算lineCount的字數，在字尾加上"...展開"
-            let charactersCount = label.text?.count
-            print(charactersCount as Any)
-            return "...展開"
-        } else {
-            // 直接顯示目前內容
-            return ""
-        }
     }
 }
 
@@ -199,34 +203,6 @@ extension MovieDetailViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-        tableView.beginUpdates()
-        switch indexPath.row {
-        case 1:
-            guard let cell = cell as? MovieIntroCell else { return }
-            guard let label = cell.contentLabel else { return }
-            if label.numberOfLines == 0 {
-                label.numberOfLines = 5
-                dict[indexPath.row] = 5
-            } else {
-                label.numberOfLines = 0
-                dict[indexPath.row] = 0
-            }
-        default:
-            guard let cell = cell as? CommentCell else { return }
-            guard let label = cell.contentLabel else { return }
-            if label.numberOfLines == 0 {
-                label.numberOfLines = 3
-                dict[indexPath.row] = 3
-            } else {
-                label.numberOfLines = 0
-                dict[indexPath.row] = 0
-            }
-        }
-        tableView.endUpdates()
-    }
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let radius = -offsetY / heightOfTopView
@@ -243,22 +219,13 @@ extension MovieDetailViewController: UITableViewDelegate {
             
             if radius > 0 {
                 movieNameLabel.frame.origin.y = 100 * (1-radius)
-                directorLabel.alpha = radius
-                castLabel.alpha = radius
-                genresLabel.alpha = radius
-                dateLabel.alpha = radius
-                pubdateLabel.alpha = radius
-                countriesLabel.alpha = radius
-                movieNameLabel.numberOfLines = 2
-            } else {
-                directorLabel.alpha = 0
-                castLabel.alpha = 0
-                genresLabel.alpha = 0
-                dateLabel.alpha = 0
-                pubdateLabel.alpha = 0
-                countriesLabel.alpha = 0
-                movieNameLabel.numberOfLines = 1
             }
+            directorLabel.alpha = radius > 0 ? radius : 0
+            castLabel.alpha = radius > 0 ? radius : 0
+            genresLabel.alpha = radius > 0 ? radius : 0
+            pubdateLabel.alpha = radius > 0 ? radius : 0
+            countriesLabel.alpha = radius > 0 ? radius : 0
+            movieNameLabel.numberOfLines = radius > 0 ? 2 : 1
         }
         
         if (-offsetY > heightOfHeader){ // 海報放大

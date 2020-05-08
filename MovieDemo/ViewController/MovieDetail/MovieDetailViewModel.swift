@@ -13,7 +13,7 @@ import RxCocoa
 class MovieDetailViewModel: ViewModelType {
     
     struct Input {
-        
+        let indexPathOfCell: AnyObserver<IndexPath>
     }
     
     struct Output {
@@ -22,9 +22,10 @@ class MovieDetailViewModel: ViewModelType {
         let directors: Observable<String>
         let casts: Observable<String>
         let genres: Observable<String>
-        let pubdate: Driver<String>
+        let pubdate: Observable<String>
         let countries: Observable<String>
         let cellData: BehaviorRelay<[Any]>
+        let labelNumsOfLines: BehaviorRelay<(IndexPath, Int)?>
     }
     
     let input: Input
@@ -37,10 +38,11 @@ class MovieDetailViewModel: ViewModelType {
     init(eventId: String) {
         
         let cellData = BehaviorRelay<[Any]>(value: [])
+        let indexPathOfCell = PublishSubject<IndexPath>()
+        let labelNumsOfLines = BehaviorRelay<(IndexPath, Int)?>(value: nil)
         
         let movieTitle = movieDetail.compactMap({ $0?.title }).asDriver(onErrorJustReturn: "電影名稱")
-        let pubdate = movieDetail.compactMap({ $0?.year }).asDriver(onErrorJustReturn: "")
-                
+        
         movieDetail.map { (movieObject) -> [Any] in
             guard let movieObject = movieObject else { return [] }
             var dataList = [
@@ -59,6 +61,43 @@ class MovieDetailViewModel: ViewModelType {
         }
         .bind(to: cellData)
         .disposed(by: self.disposeBag)
+        
+        var dic: [IndexPath: Int] = [:]
+        cellData
+            .filter({ $0.count > 0 })
+            .subscribe(onNext: { (array) in
+                for i in 0..<array.count {
+                    switch i {
+                    case 1:  dic[IndexPath(row: i, section: 0)] = 5
+                    case let x where x > 3: dic[IndexPath(row: x, section: 0)] = 3
+                    default: break
+                    }
+                }
+            })
+            .disposed(by: self.disposeBag)
+        
+        indexPathOfCell
+            .subscribe(onNext: { (indexPath) in
+                var originCount = 0
+                switch indexPath.row {
+                case 1: originCount = 5
+                case let x where x > 3: originCount = 3
+                default: return
+                }
+//                if dic.count > 0 {
+                    if let value = dic[indexPath] {
+                        if value == 0 {
+                            dic[indexPath] = originCount
+                        } else if value == originCount {
+                            dic[indexPath] = 0
+                        }
+                        if let resultCount = dic[indexPath] {
+                            labelNumsOfLines.accept((indexPath, resultCount))
+                        }
+                    }
+//                }
+            })
+            .disposed(by: self.disposeBag)
         
         let directors = movieDetail.map { model -> String in
             guard let model = model else { return "" }
@@ -104,6 +143,12 @@ class MovieDetailViewModel: ViewModelType {
             return "類型：" + categories
         }
         
+        let pubdate = movieDetail.map { model -> String in
+            guard let model = model else { return "" }
+            let year = model.year
+            return "上映日期：" + year
+        }
+        
         let countries = movieDetail.map { model -> String in
             guard let model = model else { return "" }
             var countries = ""
@@ -115,9 +160,9 @@ class MovieDetailViewModel: ViewModelType {
             }
             return "製片國家/地區：" + countries
         }
-
         
-        self.input = Input()
+        
+        self.input = Input(indexPathOfCell: indexPathOfCell.asObserver())
         self.output = Output(movieDetail: movieDetail,
                              movieTitle: movieTitle,
                              directors: directors,
@@ -125,7 +170,8 @@ class MovieDetailViewModel: ViewModelType {
                              genres: genres,
                              pubdate: pubdate,
                              countries: countries,
-                             cellData: cellData)
+                             cellData: cellData,
+                             labelNumsOfLines: labelNumsOfLines)
         
         getMovieDetails(movieId: eventId)
     }
@@ -135,8 +181,8 @@ class MovieDetailViewModel: ViewModelType {
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
                 self?.movieDetail.accept(model)
-            }, onError: { [weak self] _ in
-                self?.movieDetail.accept(nil)
+                }, onError: { [weak self] _ in
+                    self?.movieDetail.accept(nil)
             })
             .disposed(by: disposeBag)
     }

@@ -30,4 +30,23 @@ extension UILabel {
     public var lines: Int {
         return Int(requiredHeight / font.lineHeight)
     }
+    
+    func willExpandLabel(label: UILabel, text: String, lineCount: Int) {
+        let actualLines = label.lines
+        label.numberOfLines = actualLines > lineCount ? lineCount : actualLines
+//        if actualLines > lineCount {
+//            // 計算lineCount的字數
+//            let charactersCount = label.text?.count
+//            print(charactersCount)
+//            // 在字尾加上"...展開"
+//            let size = CGSize(width: width - 16, height: 0)
+//            var textSize = CGSize()
+//            let charactersLineCount = lineCount
+//            let attributes: [String : Any] = []
+//            textSize = text.boundingRect(with: size, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: attributes , context: nil)
+//            print(charactersCount)
+//        } else {
+//            // 直接顯示目前內容
+//        }
+    }
 }
