@@ -32,10 +32,11 @@ class MovieDetailViewModel: ViewModelType {
     let output: Output
     
     private let movieDetail = BehaviorRelay<MovieObject?>(value: nil)
-    
     private let disposeBag = DisposeBag()
     
     init(eventId: String) {
+        
+        var dic: [IndexPath: Int] = [:]
         
         let cellData = BehaviorRelay<[Any]>(value: [])
         let indexPathOfCell = PublishSubject<IndexPath>()
@@ -62,13 +63,12 @@ class MovieDetailViewModel: ViewModelType {
         .bind(to: cellData)
         .disposed(by: self.disposeBag)
         
-        var dic: [IndexPath: Int] = [:]
         cellData
             .filter({ $0.count > 0 })
-            .subscribe(onNext: { (array) in
-                for i in 0..<array.count {
-                    switch i {
-                    case 1:  dic[IndexPath(row: i, section: 0)] = 5
+            .subscribe(onNext: { (dataList) in
+                for indexPath in 0..<dataList.count {
+                    switch indexPath {
+                    case 1:  dic[IndexPath(row: indexPath, section: 0)] = 5
                     case let x where x > 3: dic[IndexPath(row: x, section: 0)] = 3
                     default: break
                     }
@@ -84,18 +84,16 @@ class MovieDetailViewModel: ViewModelType {
                 case let x where x > 3: originCount = 3
                 default: return
                 }
-//                if dic.count > 0 {
-                    if let value = dic[indexPath] {
-                        if value == 0 {
-                            dic[indexPath] = originCount
-                        } else if value == originCount {
-                            dic[indexPath] = 0
-                        }
-                        if let resultCount = dic[indexPath] {
-                            labelNumsOfLines.accept((indexPath, resultCount))
-                        }
+                if let linesOfLabel = dic[indexPath] {
+                    if linesOfLabel == 0 {
+                        dic[indexPath] = originCount
+                    } else if linesOfLabel == originCount {
+                        dic[indexPath] = 0
                     }
-//                }
+                    if let resultCount = dic[indexPath] {
+                        labelNumsOfLines.accept((indexPath, resultCount))
+                    }
+                }
             })
             .disposed(by: self.disposeBag)
         
