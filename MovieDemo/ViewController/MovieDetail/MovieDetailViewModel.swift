@@ -12,6 +12,8 @@ import RxCocoa
 
 class MovieDetailViewModel: ViewModelType {
     
+    typealias LabelLines = (indexPath: IndexPath, lines: Int)
+    
     struct Input {
         let indexPathOfCell: AnyObserver<IndexPath>
     }
@@ -25,7 +27,7 @@ class MovieDetailViewModel: ViewModelType {
         let pubdate: Observable<String>
         let countries: Observable<String>
         let cellData: BehaviorRelay<[Any]>
-        let labelNumsOfLines: BehaviorRelay<(IndexPath, Int)?>
+        let labelNumsOfLines: BehaviorRelay<LabelLines?>
     }
     
     let input: Input
@@ -40,7 +42,7 @@ class MovieDetailViewModel: ViewModelType {
         
         let cellData = BehaviorRelay<[Any]>(value: [])
         let indexPathOfCell = PublishSubject<IndexPath>()
-        let labelNumsOfLines = BehaviorRelay<(IndexPath, Int)?>(value: nil)
+        let labelNumsOfLines = BehaviorRelay<LabelLines?>(value: nil)
         
         let movieTitle = movieDetail.compactMap({ $0?.title }).asDriver(onErrorJustReturn: "電影名稱")
         
@@ -52,11 +54,14 @@ class MovieDetailViewModel: ViewModelType {
                 movieObject.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars?.small ?? "")} as Any,
                 movieObject.trailers.map{CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)} as Any,
             ]
-            for comment in movieObject.popularComments as [PopularComments] {
+            for (index, comment) in movieObject.popularComments.enumerated() {
+                var isTitleHidden: Bool?
+                isTitleHidden = index == 0 ? false : true
                 dataList.append(PopularComments(usefulCount: comment.usefulCount,
                                                 author: comment.author,
                                                 content: comment.content,
-                                                createdAt: comment.createdAt))
+                                                createdAt: comment.createdAt,
+                                                isTitleHidden: isTitleHidden))
             }
             return dataList
         }

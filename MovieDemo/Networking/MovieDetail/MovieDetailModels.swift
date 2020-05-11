@@ -22,13 +22,10 @@ struct MovieObject: Codable {
     let trailers: [Trailer]
     
     enum CodingKeys: String, CodingKey {
-        case title
+        case title, year, summary
         case images
         case directors
-        case genres
-        case year
-        case countries
-        case summary
+        case genres, countries
         case rating
         case popularComments = "popular_comments"
         case casts
@@ -50,12 +47,13 @@ struct PopularComments: Codable {
     let author: Author
     let content: String
     let createdAt: String
+    let isTitleHidden: Bool?
     
     enum CodingKeys: String, CodingKey {
         case usefulCount = "useful_count"
-        case author
-        case content
+        case author, content
         case createdAt = "created_at"
+        case isTitleHidden
     }
 }
 

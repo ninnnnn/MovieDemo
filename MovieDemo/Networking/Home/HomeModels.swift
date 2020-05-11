@@ -31,14 +31,12 @@ struct Subjects: Codable {
     let id: String
     
     enum CodingKeys: String, CodingKey {
-        case genres
-        case title
-        case durations
+        case genres, durations
+        case title, id
         case mainlandPubdate = "mainland_pubdate"
         case images
         case casts
         case directors
-        case id
     }
 }
 
@@ -51,12 +49,10 @@ struct Subject: Codable {
     let id: String
     
     enum CodingKeys: String, CodingKey {
-        case genres
-        case title
-        case durations
+        case genres, durations
+        case title, id
         case mainlandPubdate = "mainland_pubdate"
         case images
-        case id
     }
 }
 

@@ -10,11 +10,11 @@ import UIKit
 
 class CommentCell: UITableViewCell, CellType {
     
-    @IBOutlet weak var categoryStackView: UIStackView!
-    @IBOutlet weak var userImageView: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var postTimeLabel: UILabel!
-    @IBOutlet weak var usefulCountLabel: UILabel!
+    @IBOutlet private weak var categoryStackView: UIStackView!
+    @IBOutlet private weak var userImageView: UIImageView!
+    @IBOutlet private weak var userNameLabel: UILabel!
+    @IBOutlet private weak var postTimeLabel: UILabel!
+    @IBOutlet private weak var usefulCountLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
         
     override func awakeFromNib() {
@@ -35,6 +35,7 @@ class CommentCell: UITableViewCell, CellType {
             postTimeLabel.text = data.createdAt
             usefulCountLabel.text = String(data.usefulCount) + " 有用"
             contentLabel.text = data.content
+            categoryStackView.isHidden = data.isTitleHidden ?? true
         }
     }
 }

@@ -12,8 +12,8 @@ import RxCocoa
 
 class HomeViewController: UIViewController {
     
-    @IBOutlet weak var tabView: ScrollableTabView!
-    @IBOutlet weak var tableView: UITableView! {
+    @IBOutlet private weak var tabView: ScrollableTabView!
+    @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
             tableView.delegate = self
@@ -63,8 +63,8 @@ class HomeViewController: UIViewController {
     }
     
     private func setNavigationBar() {
-        navigationController?.navigationBar.backgroundColor = UIColor(named: "MainColor")
-        navigationController?.navigationBar.barTintColor = UIColor(named: "MainColor")
+        navigationController?.navigationBar.backgroundColor = UIColor.MainColor
+        navigationController?.navigationBar.barTintColor = UIColor.MainColor
         navigationItem.title = "豆瓣電影"
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
@@ -73,7 +73,7 @@ class HomeViewController: UIViewController {
     private func setSearchController() {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.backgroundImage = UIImage()
-        searchController.searchBar.backgroundColor = UIColor(named: "MainColor")
+        searchController.searchBar.backgroundColor = UIColor.MainColor
         searchController.searchBar.placeholder = "輸入電影名稱"
         searchController.hidesNavigationBarDuringPresentation = false
     }
@@ -83,10 +83,8 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let didTapItem = tabView.didTapItem.value
         switch didTapItem?.id {
-        case 4, 5:
-            return viewModel.output.weeklyAndUSList.value.count
-        default:
-            return viewModel.output.movieList.value.count
+        case 4, 5: return viewModel.output.weeklyAndUSList.value.count
+        default: return viewModel.output.movieList.value.count
         }
     }
     
@@ -115,10 +113,8 @@ extension HomeViewController: UITableViewDelegate {
         let didTapItem = tabView.didTapItem.value
         var id: String = ""
         switch didTapItem?.id {
-        case 4, 5:
-            id = self.viewModel.output.weeklyAndUSList.value[indexPath.row].subject.id
-        default:
-            id = self.viewModel.output.movieList.value[indexPath.row].id
+        case 4, 5: id = self.viewModel.output.weeklyAndUSList.value[indexPath.row].subject.id
+        default: id = self.viewModel.output.movieList.value[indexPath.row].id
         }
         detailVC.movieId = id
         self.navigationController?.pushViewController(detailVC, animated: true)

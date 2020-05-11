@@ -12,12 +12,12 @@ import RxCocoa
 
 class HomeMovieCell: UITableViewCell {
 
-    @IBOutlet weak var cellBackgroundView: UIView!
-    @IBOutlet weak var movieImageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var categoryLabel: UILabel!
-    @IBOutlet weak var pubdateLabel: UILabel!
-    @IBOutlet weak var durationsLabel: UILabel!
+    @IBOutlet private weak var cellBackgroundView: UIView!
+    @IBOutlet private weak var movieImageView: UIImageView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var categoryLabel: UILabel!
+    @IBOutlet private weak var pubdateLabel: UILabel!
+    @IBOutlet private weak var durationsLabel: UILabel!
     
     var disposeBag = DisposeBag()
     var movieData: [Subjects] = []

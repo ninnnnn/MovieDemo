@@ -16,15 +16,15 @@ protocol CellType: UITableViewCell {
 
 class MovieDetailViewController: UIViewController {
     
-    @IBOutlet weak var movieNameLabel: UILabel!
-    @IBOutlet weak var topView: UIView!
-    @IBOutlet weak var directorLabel: UILabel!
-    @IBOutlet weak var castLabel: UILabel!
-    @IBOutlet weak var genresLabel: UILabel!
-    @IBOutlet weak var pubdateLabel: UILabel!
-    @IBOutlet weak var countriesLabel: UILabel!
-    @IBOutlet weak var topViewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var tableView: UITableView! {
+    @IBOutlet private weak var movieNameLabel: UILabel!
+    @IBOutlet private weak var topView: UIView!
+    @IBOutlet private weak var directorLabel: UILabel!
+    @IBOutlet private weak var castLabel: UILabel!
+    @IBOutlet private weak var genresLabel: UILabel!
+    @IBOutlet private weak var pubdateLabel: UILabel!
+    @IBOutlet private weak var countriesLabel: UILabel!
+    @IBOutlet private weak var topViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
             tableView.delegate = self
@@ -77,13 +77,13 @@ class MovieDetailViewController: UIViewController {
             .subscribe(onNext: { [weak self] obj in
                 guard let obj = obj else { return }
                 self?.tableView.beginUpdates()
-                switch obj.0.row {
+                switch obj.indexPath.row {
                 case 1:
-                    guard let cell = self?.tableView.cellForRow(at: obj.0) as? MovieIntroCell else { return }
-                    cell.contentLabel.numberOfLines = obj.1
+                    guard let cell = self?.tableView.cellForRow(at: obj.indexPath) as? MovieIntroCell else { return }
+                    cell.contentLabel.numberOfLines = obj.lines
                 case let x where x > 3:
-                    guard let cell = self?.tableView.cellForRow(at: obj.0) as? CommentCell else { return }
-                    cell.contentLabel.numberOfLines = obj.1
+                    guard let cell = self?.tableView.cellForRow(at: obj.indexPath) as? CommentCell else { return }
+                    cell.contentLabel.numberOfLines = obj.lines
                 default: return
                 }
                 self?.tableView.endUpdates()
@@ -169,23 +169,12 @@ extension MovieDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell: CellType?
         switch indexPath.row {
-        case 0:
-            cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? CellType
-        case 1:
-            cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? CellType
-        case 2:
-            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
-        case 3:
-            cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
-        case let x where x > 3:
-            cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CellType
-            if indexPath.row == 4 {
-                (cell as? CommentCell)?.categoryStackView.isHidden = false
-            } else {
-                (cell as? CommentCell)?.categoryStackView.isHidden = true
-            }
-        default:
-            return UITableViewCell()
+        case 0: cell = tableView.dequeueReusableCell(withIdentifier: StarRateCell.identifier, for: indexPath) as? CellType
+        case 1: cell = tableView.dequeueReusableCell(withIdentifier: MovieIntroCell.identifier, for: indexPath) as? CellType
+        case 2: cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
+        case 3: cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier, for: indexPath) as? CellType
+        case let x where x > 3: cell = tableView.dequeueReusableCell(withIdentifier: CommentCell.identifier, for: indexPath) as? CellType
+        default: return UITableViewCell()
         }
         
         let data = self.viewModel.output.cellData.value[indexPath.row]
@@ -204,6 +193,7 @@ extension MovieDetailViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //        if view.window == nil || !self.isViewLoaded { return }
         let offsetY = scrollView.contentOffset.y
         let radius = -offsetY / heightOfTopView
         let remainHeader = topView.frame.height / 4
