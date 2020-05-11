@@ -11,8 +11,8 @@ import Cosmos
 
 class StarRateCell: UITableViewCell, CellType {
 
-    @IBOutlet weak var cosmosView: CosmosView!
-    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet private weak var cosmosView: CosmosView!
+    @IBOutlet private weak var ratingLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

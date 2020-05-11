@@ -10,8 +10,8 @@ import UIKit
 
 class ImageCell: UITableViewCell, CellType {
 
-    @IBOutlet weak var categoryLabel: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView! {
+    @IBOutlet private weak var categoryLabel: UILabel!
+    @IBOutlet private weak var collectionView: UICollectionView! {
         didSet {
             collectionView.dataSource = self
             collectionView.delegate = self

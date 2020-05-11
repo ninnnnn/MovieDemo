@@ -12,8 +12,8 @@ import RxCocoa
 
 class HomeViewController: UIViewController {
     
-    @IBOutlet weak var tabView: ScrollableTabView!
-    @IBOutlet weak var tableView: UITableView! {
+    @IBOutlet private weak var tabView: ScrollableTabView!
+    @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
             tableView.delegate = self
@@ -25,80 +25,80 @@ class HomeViewController: UIViewController {
     
     let searchController = UISearchController(searchResultsController: nil)
     
-    lazy var searchTextField: UITextField? = { [unowned self] in
-        var textField: UITextField?
-        self.searchController.searchBar.subviews.forEach({ view in
-            view.subviews.forEach({ view in
-                if let view  = view as? UITextField {
-                    textField = view
-                }
-            })
-        })
-        return textField
-    }()
-    
-    lazy var refreshControl: RxRefreshControl = {
-        return RxRefreshControl(viewModel)
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = HomeViewModel()
         
         registerCell()
         setNavigationBar()
+        setSearchController()
         binding()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.refreshData()
-    }
-
     private func registerCell() {
         tableView.registerCellWithNib(identifier: String(describing: HomeMovieCell.self), bundle: nil)
     }
     
     private func binding() {
-        DataManager.shared.tabData
-            .map({ $0 })
-            .bind(to: tabView.dataArray)
-            .disposed(by: self.disposeBag)
+        DataManager.shared.tabData.subscribe(onNext: { [weak self] (tabDataList) in
+            self?.tabView.dataArray.accept(tabDataList)
+            self?.tabView.updateDefualtSelect(tabDataList[0])
+        }).disposed(by: self.disposeBag)
         
         // input
-        tabView.didTapItem
-            .map({ $0?.title ?? HomeTabs.getInTheater.rawValue })
+        tabView.didTapItem.do(onNext: { (_) in
+            CustomProgressHUD.show()
+        })
+            .map({ $0?.id ?? 1 })
             .bind(to: viewModel.input.tabName)
-            .disposed(by: disposeBag)
+            .disposed(by: self.disposeBag)
         
         // output
-        viewModel.output.movieList
-        .subscribe(onNext: { [weak self] _ in
-            self?.tableView.reloadData()
-        })
-        .disposed(by: disposeBag)
+        viewModel.output.reloadData
+            .subscribe(onNext: { [weak self] _ in
+                CustomProgressHUD.dismiss()
+                self?.tableView.reloadData()
+            })
+            .disposed(by: self.disposeBag)
     }
     
     private func setNavigationBar() {
-        navigationController?.navigationBar.backgroundColor = UIColor(named: "MainColor")
-        navigationController?.navigationBar.barTintColor = UIColor(named: "MainColor")
+        navigationController?.navigationBar.backgroundColor = UIColor.MainColor
+        navigationController?.navigationBar.barTintColor = UIColor.MainColor
         navigationItem.title = "豆瓣電影"
-        searchController.searchBar.placeholder = "Search for movie"
-        searchController.searchBar.backgroundImage = UIImage()
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
-        
+    }
+    
+    private func setSearchController() {
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.backgroundImage = UIImage()
+        searchController.searchBar.backgroundColor = UIColor.MainColor
+        searchController.searchBar.placeholder = "輸入電影名稱"
+        searchController.hidesNavigationBarDuringPresentation = false
     }
 }
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.output.movieList.value.count
+        let didTapItem = tabView.didTapItem.value
+        switch didTapItem?.id {
+        case 4, 5: return viewModel.output.weeklyAndUSList.value.count
+        default: return viewModel.output.movieList.value.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: HomeMovieCell.identifier, for: indexPath) as? HomeMovieCell else { return UITableViewCell()}
-        let data = viewModel.output.movieList.value[indexPath.row]
-        cell.setupData(data: data)
+        let didTapItem = tabView.didTapItem.value
+        switch didTapItem?.id {
+        case 4, 5:
+            let data = viewModel.output.weeklyAndUSList.value[indexPath.row].subject
+            cell.setupData(data: data)
+        default:
+            let data = viewModel.output.movieList.value[indexPath.row]
+            cell.setupData(data: data)
+        }
         return cell
     }
 }
@@ -110,7 +110,13 @@ extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let detailVC = UIStoryboard.movieDetail.instantiateViewController(withClass: MovieDetailViewController.self) else { return }
-        detailVC.movieId = self.viewModel.output.movieList.value[indexPath.row].id
+        let didTapItem = tabView.didTapItem.value
+        var id: String = ""
+        switch didTapItem?.id {
+        case 4, 5: id = self.viewModel.output.weeklyAndUSList.value[indexPath.row].subject.id
+        default: id = self.viewModel.output.movieList.value[indexPath.row].id
+        }
+        detailVC.movieId = id
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

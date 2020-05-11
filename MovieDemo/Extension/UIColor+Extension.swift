@@ -9,13 +9,13 @@
 import UIKit
 
 private enum ThemeColor: String {
-    case mainColor
-    case homeTextColor
+    case MainColor
+    case HomeTextColor
 }
 
 extension UIColor {
-    static let MainColor = themeColor(.mainColor)
-    static let HomeTextColor = themeColor(.homeTextColor)
+    static let MainColor = themeColor(.MainColor)
+    static let HomeTextColor = themeColor(.HomeTextColor)
         
     private static func themeColor(_ color: ThemeColor) -> UIColor? {
         return UIColor(named: color.rawValue)

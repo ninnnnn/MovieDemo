@@ -35,6 +35,9 @@ struct ScrollableTabViewOption {
     var selectTitleFont: UIFont = UIFont(name: "PingFangSC-Semibold", size: 18)!
     var unSelectTitleFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 18)!
     var tabIndicatorType: TabIndicatorType = .bottomLine
+    var disableIndexs: [Int] = []
+    var disableTextColor: UIColor = .red
+    var disableTextFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 17)!
     
     var numberFont: UIFont = UIFont(name: "PingFangSC-Regular", size: 15)!
     
@@ -236,6 +239,8 @@ class ScrollableTabView: UIView {
         
         if option.shouldChangeTitleColorWhenSelected {
             label.textColor = selected ? option.titleSelectedColor : option.titleUnSelectedColor
+        } else {
+            label.textColor = option.titleSelectedColor
         }
     }
     
@@ -266,7 +271,15 @@ extension ScrollableTabView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         collectionView.bringSubviewToFront(cell)
         if let cell = cell as? ScrollableItemCell {
-            updateTitle(in: cell.titleLabel, selected: selectedIndex == indexPath.item, animation: false)
+            if option.disableIndexs.contains(indexPath.item) {
+                cell.isUserInteractionEnabled = false
+                cell.titleLabel.textColor = option.disableTextColor
+                cell.titleLabel.font = option.disableTextFont
+                cell.titleLabel.transform = .identity
+            } else {
+                cell.isUserInteractionEnabled = true
+                updateTitle(in: cell.titleLabel, selected: selectedIndex == indexPath.item, animation: false)
+            }
         }
     }
 }
@@ -282,10 +295,10 @@ extension ScrollableTabView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if selectedIndex == indexPath.row { return }
+        if selectedIndex == indexPath.item { return }
         selectedIndex = indexPath.item
         
-        if indexPath.row < dataArray.value.count { didTapItem.accept(dataArray.value[indexPath.row]) }
+        if indexPath.item < dataArray.value.count { didTapItem.accept(dataArray.value[indexPath.row]) }
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? ScrollableItemCell else { return }
         updateTabIndicatorPosition()

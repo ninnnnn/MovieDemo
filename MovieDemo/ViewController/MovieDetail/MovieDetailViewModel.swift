@@ -12,8 +12,10 @@ import RxCocoa
 
 class MovieDetailViewModel: ViewModelType {
     
+    typealias LabelLines = (indexPath: IndexPath, lines: Int)
+    
     struct Input {
-        let movieId: AnyObserver<Int>
+        let indexPathOfCell: AnyObserver<IndexPath>
     }
     
     struct Output {
@@ -22,34 +24,82 @@ class MovieDetailViewModel: ViewModelType {
         let directors: Observable<String>
         let casts: Observable<String>
         let genres: Observable<String>
-        let pubdate: Driver<String>
+        let pubdate: Observable<String>
         let countries: Observable<String>
         let cellData: BehaviorRelay<[Any]>
+        let labelNumsOfLines: BehaviorRelay<LabelLines?>
     }
     
     let input: Input
     let output: Output
     
     private let movieDetail = BehaviorRelay<MovieObject?>(value: nil)
-    
     private let disposeBag = DisposeBag()
     
     init(eventId: String) {
         
-        let movieId = PublishSubject<Int>()
+        var dic: [IndexPath: Int] = [:]
+        
         let cellData = BehaviorRelay<[Any]>(value: [])
+        let indexPathOfCell = PublishSubject<IndexPath>()
+        let labelNumsOfLines = BehaviorRelay<LabelLines?>(value: nil)
         
         let movieTitle = movieDetail.compactMap({ $0?.title }).asDriver(onErrorJustReturn: "電影名稱")
-        let pubdate = movieDetail.compactMap({ $0?.year }).asDriver(onErrorJustReturn: "")
         
-        movieDetail
-            .map({ [$0?.rating.average as Any,
-                    $0?.summary as Any,
-                    $0?.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars.small)} as Any,
-                    $0?.trailers.map{CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)} as Any,
-                    $0?.popularComments.map{PopularComments(usefulCount: $0.usefulCount, author: $0.author, content: $0.content, createdAt: $0.createdAt)} as Any]
+        movieDetail.map { (movieObject) -> [Any] in
+            guard let movieObject = movieObject else { return [] }
+            var dataList = [
+                movieObject.rating.average as Any,
+                movieObject.summary as Any,
+                movieObject.casts.map{CellContent(type: .cast, text: $0.name, imageUrl: $0.avatars?.small ?? "")} as Any,
+                movieObject.trailers.map{CellContent(type: .trailer, text: $0.title, imageUrl: $0.medium)} as Any,
+            ]
+            for (index, comment) in movieObject.popularComments.enumerated() {
+                var isTitleHidden: Bool?
+                isTitleHidden = index == 0 ? false : true
+                dataList.append(PopularComments(usefulCount: comment.usefulCount,
+                                                author: comment.author,
+                                                content: comment.content,
+                                                createdAt: comment.createdAt,
+                                                isTitleHidden: isTitleHidden))
+            }
+            return dataList
+        }
+        .bind(to: cellData)
+        .disposed(by: self.disposeBag)
+        
+        cellData
+            .filter({ $0.count > 0 })
+            .subscribe(onNext: { (dataList) in
+                for indexPath in 0..<dataList.count {
+                    switch indexPath {
+                    case 1:  dic[IndexPath(row: indexPath, section: 0)] = 5
+                    case let x where x > 3: dic[IndexPath(row: x, section: 0)] = 3
+                    default: break
+                    }
+                }
             })
-            .bind(to: cellData)
+            .disposed(by: self.disposeBag)
+        
+        indexPathOfCell
+            .subscribe(onNext: { (indexPath) in
+                var originCount = 0
+                switch indexPath.row {
+                case 1: originCount = 5
+                case let x where x > 3: originCount = 3
+                default: return
+                }
+                if let linesOfLabel = dic[indexPath] {
+                    if linesOfLabel == 0 {
+                        dic[indexPath] = originCount
+                    } else if linesOfLabel == originCount {
+                        dic[indexPath] = 0
+                    }
+                    if let resultCount = dic[indexPath] {
+                        labelNumsOfLines.accept((indexPath, resultCount))
+                    }
+                }
+            })
             .disposed(by: self.disposeBag)
         
         let directors = movieDetail.map { model -> String in
@@ -96,6 +146,12 @@ class MovieDetailViewModel: ViewModelType {
             return "類型：" + categories
         }
         
+        let pubdate = movieDetail.map { model -> String in
+            guard let model = model else { return "" }
+            let year = model.year
+            return "上映日期：" + year
+        }
+        
         let countries = movieDetail.map { model -> String in
             guard let model = model else { return "" }
             var countries = ""
@@ -107,9 +163,9 @@ class MovieDetailViewModel: ViewModelType {
             }
             return "製片國家/地區：" + countries
         }
-
         
-        self.input = Input(movieId: movieId.asObserver())
+        
+        self.input = Input(indexPathOfCell: indexPathOfCell.asObserver())
         self.output = Output(movieDetail: movieDetail,
                              movieTitle: movieTitle,
                              directors: directors,
@@ -117,21 +173,19 @@ class MovieDetailViewModel: ViewModelType {
                              genres: genres,
                              pubdate: pubdate,
                              countries: countries,
-                             cellData: cellData)
+                             cellData: cellData,
+                             labelNumsOfLines: labelNumsOfLines)
         
         getMovieDetails(movieId: eventId)
     }
     
     private func getMovieDetails(movieId: String) {
-        CustomProgressHUD.show()
         APIService.shared.request(MovieDetailAPI.GetMovieDetail(movieId: movieId))
             .subscribeOn(MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] (model) in
-                CustomProgressHUD.dismiss()
                 self?.movieDetail.accept(model)
-            }, onError: { [weak self] _ in
-                CustomProgressHUD.showFailure()
-                self?.movieDetail.accept(nil)
+                }, onError: { [weak self] _ in
+                    self?.movieDetail.accept(nil)
             })
             .disposed(by: disposeBag)
     }

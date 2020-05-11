@@ -22,13 +22,10 @@ struct MovieObject: Codable {
     let trailers: [Trailer]
     
     enum CodingKeys: String, CodingKey {
-        case title
+        case title, year, summary
         case images
         case directors
-        case genres
-        case year
-        case countries
-        case summary
+        case genres, countries
         case rating
         case popularComments = "popular_comments"
         case casts
@@ -37,7 +34,7 @@ struct MovieObject: Codable {
 }
 
 struct Director: Codable {
-    let avatars: Images
+    let avatars: Images?
     let name: String
 }
 
@@ -50,12 +47,13 @@ struct PopularComments: Codable {
     let author: Author
     let content: String
     let createdAt: String
+    let isTitleHidden: Bool?
     
     enum CodingKeys: String, CodingKey {
         case usefulCount = "useful_count"
-        case author
-        case content
+        case author, content
         case createdAt = "created_at"
+        case isTitleHidden
     }
 }
 
@@ -65,7 +63,7 @@ struct Author: Codable {
 }
 
 struct Cast: Codable {
-    let avatars: Images
+    let avatars: Images?
     let name: String
 }
 
@@ -75,7 +73,6 @@ struct Trailer: Codable {
 }
 
 // Custom model type for collectionView cell
-
 enum ModelType {
     case cast
     case trailer
