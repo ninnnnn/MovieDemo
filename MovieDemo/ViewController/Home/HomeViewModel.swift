@@ -10,7 +10,17 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class HomeViewModel: ViewModelType {
+class HomeViewModel: ViewModelType, Refreshable {
+    
+    var endRefresh: PublishSubject<Void> = PublishSubject<Void>()
+    func refreshData() {
+        let tabId = tabIdSub.value
+        if tabId == 4 || tabId == 5 {
+            getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs(rawValue: tabId)!)
+        } else {
+            getMovies(tabName: HomeTabs(rawValue: tabId)!)
+        }
+    }
     
     struct Input {
         let tabName: AnyObserver<Int>
@@ -27,6 +37,7 @@ class HomeViewModel: ViewModelType {
     
     private let moviesResult = BehaviorRelay<[Subjects]>(value: [])
     private let weeklyAndUSResult = BehaviorRelay<[Subjects2]>(value: [])
+    private let tabIdSub = BehaviorRelay<Int>(value: 0)
     
     private let disposeBag = DisposeBag()
     
@@ -41,13 +52,19 @@ class HomeViewModel: ViewModelType {
         
         tabName
             .subscribe(onNext: { [weak self] (tabId) in
+                guard let self = self else { return }
+                self.tabIdSub.accept(tabId)
                 if tabId == 4 || tabId == 5 {
-                    self?.getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs(rawValue: tabId)!)
+                    self.getWeeklyAndUSMovies(tabName: WeeklyAndUSTabs(rawValue: tabId)!)
                 } else {
-                    self?.getMovies(tabName: HomeTabs(rawValue: tabId)!)
+                    self.getMovies(tabName: HomeTabs(rawValue: tabId)!)
                 }
             })
             .disposed(by: disposeBag)
+        
+        reloadData
+            .bind(to: endRefresh)
+            .disposed(by: self.disposeBag)
     }
     
     private func getMovies(tabName: HomeTabs) {

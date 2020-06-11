@@ -25,4 +25,5 @@ target 'MovieDemo' do
 
     pod 'Cosmos'
     pod 'JGProgressHUD'
+    pod 'lottie-ios', '3.1.8'
 end

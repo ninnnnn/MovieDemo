@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Lottie
 
 class HomeViewController: UIViewController {
     
@@ -21,7 +22,11 @@ class HomeViewController: UIViewController {
     }
     
     private let disposeBag = DisposeBag()
+    private let animationView = Lottie.AnimationView(name: "loading")
     private var viewModel: HomeViewModel!
+    private lazy var refreshControl: RxRefreshControl = {
+        return RxRefreshControl(viewModel)
+    }()
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -29,10 +34,15 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         viewModel = HomeViewModel()
         
+        configureUI()
         registerCell()
         setNavigationBar()
         setSearchController()
         binding()
+    }
+    
+    private func configureUI() {
+        tableView.refreshControl = refreshControl
     }
     
     private func registerCell() {
@@ -44,6 +54,18 @@ class HomeViewController: UIViewController {
             self?.tabView.dataArray.accept(tabDataList)
             self?.tabView.updateDefualtSelect(tabDataList[0])
         }).disposed(by: self.disposeBag)
+        
+        refreshControl.rx.controlEvent(.valueChanged)
+//            .do(onNext: { [weak self] _ in
+//                guard let self = self else { return }
+//                self.animationView.currentProgress = 0
+//                self.animationView.play()
+//            })
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.tableView.reloadData()
+            })
+            .disposed(by: self.disposeBag)
         
         // input
         tabView.didTapItem.do(onNext: { (_) in
@@ -76,6 +98,10 @@ class HomeViewController: UIViewController {
         searchController.searchBar.backgroundColor = UIColor.MainColor
         searchController.searchBar.placeholder = "輸入電影名稱"
         searchController.hidesNavigationBarDuringPresentation = false
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        refreshControl.updateProgress(with: scrollView.contentOffset.y)
     }
 }
 

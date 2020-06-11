@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D4F87602490933F00552024 /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D4F875F2490933F00552024 /* loading.json */; };
+		0DE0F9D22490E3CD006E155A /* LottieRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE0F9D12490E3CD006E155A /* LottieRefreshControl.swift */; };
 		0DF7C5132452C99E003F3C63 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF7C5122452C99E003F3C63 /* AppDelegate.swift */; };
 		0DF7C5172452C99E003F3C63 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF7C5162452C99E003F3C63 /* HomeViewController.swift */; };
 		0DF7C51A2452C99E003F3C63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DF7C5182452C99E003F3C63 /* Main.storyboard */; };
@@ -78,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D4F875F2490933F00552024 /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
+		0DE0F9D12490E3CD006E155A /* LottieRefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieRefreshControl.swift; sourceTree = "<group>"; };
 		0DF7C50F2452C99E003F3C63 /* MovieDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF7C5122452C99E003F3C63 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0DF7C5162452C99E003F3C63 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				0DF7C5532452D5E2003F3C63 /* ScrollableTabView */,
+				0DE0F9D12490E3CD006E155A /* LottieRefreshControl.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -384,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				0DF7C51B2452C99F003F3C63 /* Assets.xcassets */,
+				0D4F875F2490933F00552024 /* loading.json */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -543,6 +549,7 @@
 			files = (
 				0DF7C56D2452DF7C003F3C63 /* MovieDetail.storyboard in Resources */,
 				0DF7C51F2452C99F003F3C63 /* LaunchScreen.storyboard in Resources */,
+				0D4F87602490933F00552024 /* loading.json in Resources */,
 				0DF7C5A72459917A003F3C63 /* CollectionViewCell.xib in Resources */,
 				0DF7C5572452D5E2003F3C63 /* ScrollableItemCell.xib in Resources */,
 				0DF7C51C2452C99F003F3C63 /* Assets.xcassets in Resources */,
@@ -713,6 +720,7 @@
 				0DF7C58C2456AB29003F3C63 /* KingFisherWrapper.swift in Sources */,
 				0DF7C5B0245AA015003F3C63 /* MovieDetailAPI.swift in Sources */,
 				0DF7C57E2456734C003F3C63 /* APIService.swift in Sources */,
+				0DE0F9D22490E3CD006E155A /* LottieRefreshControl.swift in Sources */,
 				0DF7C5522452CD11003F3C63 /* HomeMovieCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
